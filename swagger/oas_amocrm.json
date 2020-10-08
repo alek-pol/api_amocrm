@@ -9,8 +9,876 @@
     "version" : "4.0.0"
   },
   "servers" : [ {
-    "url" : "/"
+    "url" : "https://{subdomain}.amocrm.ru",
+    "variables" : {
+      "subdomain" : {
+        "description" : "Название поддомена",
+        "default" : "test_asp8"
+      }
+    }
+  }, {
+    "url" : "https://{domen}",
+    "variables" : {
+      "domen" : {
+        "description" : "Название домена",
+        "default" : "test_asp8"
+      }
+    }
   } ],
-  "paths" : { },
-  "components" : { }
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "Authorization",
+    "description" : "Упрощенная авторизация"
+  }, {
+    "name" : "Users",
+    "description" : "Пользователи"
+  } ],
+  "paths" : {
+    "/api/v4/users" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Список пользователей",
+        "description" : "## Метод позволяет получить список состоящих в аккаунте пользователей.\n__Метод доступен только с правами администратора аккаунта!__\n  \n---\n## Метод возвращает коллекцию моделей пользователей,\n  Объекты прав имеют общую структуру. В зависимости от типа сущности, имеют в себе доступные действия, как ключи, и право на действие, как значение. \n  \n  Например, rights[leads][view]=A.\n",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                },
+                "example" : {
+                  "_total_items" : 10,
+                  "_page" : 3,
+                  "_page_count" : 5,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=3"
+                    },
+                    "first" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=1"
+                    },
+                    "prev" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=2"
+                    },
+                    "next" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=4"
+                    },
+                    "last" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=5"
+                    }
+                  },
+                  "_embedded" : {
+                    "users" : [ {
+                      "id" : 123123,
+                      "name" : "Пользователь для примера 2",
+                      "email" : "example2@mail.com",
+                      "lang" : "en",
+                      "rights" : {
+                        "leads" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "contacts" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "companies" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "tasks" : {
+                          "edit" : "A",
+                          "delete" : "A"
+                        },
+                        "mail_access" : false,
+                        "catalog_access" : false,
+                        "status_rights" : [ {
+                          "entity_type" : "leads",
+                          "pipeline_id" : 2194576,
+                          "status_id" : 30846277,
+                          "rights" : {
+                            "view" : "A",
+                            "edit" : "A",
+                            "delete" : "A"
+                          }
+                        }, {
+                          "entity_type" : "leads",
+                          "pipeline_id" : 2212201,
+                          "status_id" : 30965377,
+                          "rights" : {
+                            "view" : "A",
+                            "edit" : "A",
+                            "delete" : "A"
+                          }
+                        } ],
+                        "is_admin" : false,
+                        "is_free" : false,
+                        "is_active" : true
+                      },
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/users/123123/"
+                        }
+                      },
+                      "_embedded" : {
+                        "roles" : [ {
+                          "id" : 3141,
+                          "name" : "Менеджер",
+                          "_links" : {
+                            "self" : {
+                              "href" : "https://example.amocrm.ru/api/v4/roles/3141"
+                            }
+                          }
+                        } ],
+                        "groups" : [ {
+                          "id" : 267688,
+                          "name" : "Менеджеры"
+                        } ]
+                      }
+                    }, {
+                      "id" : 321321,
+                      "name" : "Пользователь для примера 2",
+                      "email" : "example2@mail.com",
+                      "lang" : "ru",
+                      "rights" : {
+                        "leads" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "G",
+                          "delete" : "D",
+                          "export" : "M"
+                        },
+                        "contacts" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "G",
+                          "delete" : "M",
+                          "export" : "D"
+                        },
+                        "companies" : {
+                          "view" : "A",
+                          "edit" : "G",
+                          "add" : "G",
+                          "delete" : "D",
+                          "export" : "D"
+                        },
+                        "tasks" : {
+                          "edit" : "A",
+                          "delete" : "A"
+                        },
+                        "mail_access" : true,
+                        "catalog_access" : true,
+                        "is_admin" : true,
+                        "is_free" : false,
+                        "is_active" : true
+                      },
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/users/321321"
+                        }
+                      },
+                      "_embedded" : {
+                        "roles" : [ ],
+                        "groups" : [ ]
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      }
+    },
+    "/api/v4/users/{id}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Получение пользователя по ID",
+        "description" : "## Метод позволяет получить данные конкретного пользователя, состоящего в аккаунте, по ID.\n__Метод доступен только с правами администратора аккаунта!__\n",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/users"
+                },
+                "example" : {
+                  "id" : 185848,
+                  "name" : "Алексей Поимцев",
+                  "email" : "test@example.com",
+                  "lang" : "ru",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "contacts" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "companies" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : true,
+                    "status_rights" : [ {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 142,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D",
+                        "export" : "D"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 32311027,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3104455,
+                      "status_id" : 31881115,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D"
+                      }
+                    } ],
+                    "is_admin" : false,
+                    "is_free" : false,
+                    "is_active" : true
+                  },
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/185848"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      }
+    },
+    "/oauth2/access_token" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "Получение / Обновление access token",
+        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграцииж\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграцииж\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              },
+              "examples" : {
+                "autorization" : {
+                  "value" : {
+                    "grant_type" : "authorization_code",
+                    "client_id" : "d0d0d0d0-2222-3333-4444-a0a0a0a0a0a0",
+                    "client_secret" : "LbZ11qlqdikzzgdRHtbKcWIvmfKDEE69UErrOrw9YNbJOrXPjbMXHMLzfd3dgLsA",
+                    "redirect_uri" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0",
+                    "code" : "def30100212----------1"
+                  }
+                },
+                "refresh_token" : {
+                  "value" : {
+                    "grant_type" : "authorization_code",
+                    "client_id" : "d0d0d0d0-2222-3333-4444-a0a0a0a0a0a0",
+                    "client_secret" : "LbZ11qlqdikzzgdRHtbKcWIvmfKDEE69UErrOrw9YNbJOrXPjbMXHMLzfd3dgLsA",
+                    "redirect_uri" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0",
+                    "refresh_token" : "def30100212----------1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                },
+                "examples" : {
+                  "badRequest" : {
+                    "value" : {
+                      "hint" : "Authorization code has expired",
+                      "title" : "Некорректный запрос",
+                      "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                      "status" : 400,
+                      "detail" : "В запросе отсутствует ряд параметров или параметры невалидны"
+                    }
+                  },
+                  "access_denied" : {
+                    "value" : {
+                      "title" : "Некорректный тип доступа",
+                      "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                      "status" : 400,
+                      "detail" : "Передано некорректное значение"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "autorization" : {
+        "required" : [ "client_id", "client_secret", "code", "grant_type", "redirect_uri" ],
+        "type" : "object",
+        "properties" : {
+          "grant_type" : {
+            "type" : "string",
+            "description" : "Тип авторизационных данных (для кода авторизации – authorization_code)",
+            "default" : "authorization_code"
+          },
+          "client_id" : {
+            "type" : "string",
+            "description" : "ID интеграции"
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "Секрет интеграции"
+          },
+          "redirect_uri" : {
+            "type" : "string",
+            "description" : "Redirect URI указанный в настройках интеграции",
+            "example" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Полученный код авторизации"
+          }
+        },
+        "description" : "Получение access token и refresh token"
+      },
+      "refresh_token" : {
+        "required" : [ "client_id", "client_secret", "grant_type", "redirect_uri", "refresh_token" ],
+        "type" : "object",
+        "properties" : {
+          "grant_type" : {
+            "type" : "string",
+            "description" : "Тип авторизационных данных (для refresh токена – refresh_token)",
+            "default" : "refresh_token"
+          },
+          "client_id" : {
+            "type" : "string",
+            "description" : "ID интеграции"
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "Секрет интеграции"
+          },
+          "redirect_uri" : {
+            "type" : "string",
+            "description" : "Redirect URI указанный в настройках интеграции",
+            "example" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0"
+          },
+          "refresh_token" : {
+            "type" : "string",
+            "description" : "Refresh токен"
+          }
+        },
+        "description" : "Обновление access token"
+      },
+      "users" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID пользователя"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Полное имя пользователя"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "E-mail пользователя"
+          },
+          "lang" : {
+            "type" : "string",
+            "description" : "Язык пользователя. Один из вариантов ( ru / en / es )"
+          },
+          "rights" : {
+            "$ref" : "#/components/schemas/users_rights"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/links_self"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/users__embedded"
+          }
+        }
+      },
+      "rights_simple" : {
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "type" : "string",
+            "description" : "Просмотр (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          },
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          },
+          "add" : {
+            "type" : "string",
+            "description" : "Создание (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          },
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          },
+          "export" : {
+            "type" : "string",
+            "description" : "Экспорт (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        }
+      },
+      "links" : {
+        "required" : [ "self" ],
+        "type" : "object",
+        "properties" : {
+          "self" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "first" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "prev" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "next" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "last" : {
+            "$ref" : "#/components/schemas/link_obj"
+          }
+        },
+        "description" : "Ссылка на страницу"
+      },
+      "link_obj" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          }
+        }
+      },
+      "links_self" : {
+        "type" : "object",
+        "properties" : {
+          "self" : {
+            "$ref" : "#/components/schemas/links_self_self"
+          }
+        }
+      },
+      "inline_response_200" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer",
+            "description" : "Количество найденных записей"
+          },
+          "_page" : {
+            "type" : "integer",
+            "description" : "Страница"
+          },
+          "_page_count" : {
+            "type" : "integer",
+            "description" : "Количество страниц"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/links"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/inline_response_200__embedded"
+          }
+        }
+      },
+      "body" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/autorization"
+        }, {
+          "$ref" : "#/components/schemas/refresh_token"
+        } ]
+      },
+      "inline_response_200_1" : {
+        "type" : "object",
+        "properties" : {
+          "token_type" : {
+            "type" : "string",
+            "description" : "Тип токена (Bearer)",
+            "example" : "Bearer"
+          },
+          "expires_in" : {
+            "type" : "integer",
+            "description" : "Время в секундах, показывающее через сколько токен истечет"
+          },
+          "access_token" : {
+            "type" : "string",
+            "description" : "Access токен"
+          },
+          "refresh_token" : {
+            "type" : "string",
+            "description" : "Refresh токен"
+          }
+        }
+      },
+      "inline_response_400" : {
+        "type" : "object",
+        "properties" : {
+          "hint" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        }
+      },
+      "users_rights_tasks" : {
+        "type" : "object",
+        "properties" : {
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          },
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        },
+        "description" : "Объект прав доступа к задачам"
+      },
+      "users_rights_rights" : {
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "type" : "string",
+            "description" : "Просмотр (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          },
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          },
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          },
+          "export" : {
+            "type" : "string",
+            "description" : "Экспорт (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        },
+        "description" : "Объект прав"
+      },
+      "users_rights_status_rights" : {
+        "type" : "object",
+        "properties" : {
+          "entity_type" : {
+            "type" : "string",
+            "description" : "Тип сущности. `В данный момент поддерживаются только сделки`"
+          },
+          "pipeline_id" : {
+            "type" : "integer",
+            "description" : "ID воронки, в которой находится статус"
+          },
+          "status_id" : {
+            "type" : "integer",
+            "description" : "ID статуса"
+          },
+          "rights" : {
+            "$ref" : "#/components/schemas/users_rights_rights"
+          }
+        }
+      },
+      "users_rights" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к сделкам"
+            }, {
+              "$ref" : "#/components/schemas/rights_simple"
+            } ]
+          },
+          "contacts" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к контактам"
+            }, {
+              "$ref" : "#/components/schemas/rights_simple"
+            } ]
+          },
+          "companies" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к компаниям"
+            }, {
+              "$ref" : "#/components/schemas/rights_simple"
+            } ]
+          },
+          "tasks" : {
+            "$ref" : "#/components/schemas/users_rights_tasks"
+          },
+          "mail_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу почты"
+          },
+          "catalog_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу списков"
+          },
+          "status_rights" : {
+            "type" : "array",
+            "description" : "Массив из объектов, которые описывают права на статусы",
+            "nullable" : true,
+            "items" : {
+              "$ref" : "#/components/schemas/users_rights_status_rights"
+            }
+          },
+          "is_admin" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь администратором"
+          },
+          "is_free" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь бесплатным"
+          },
+          "is_active" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь активным"
+          },
+          "group_id" : {
+            "type" : "integer",
+            "description" : "ID группы, к которой относится пользователь",
+            "nullable" : true
+          },
+          "role_id" : {
+            "type" : "integer",
+            "description" : "ID роли, которая установлена у пользователя",
+            "nullable" : true
+          }
+        }
+      },
+      "users__embedded_roles" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "$ref" : "#/components/schemas/links_self"
+          }
+        }
+      },
+      "users__embedded_groups" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "users__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/users__embedded_roles"
+            }
+          },
+          "groups" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/users__embedded_groups"
+            }
+          }
+        }
+      },
+      "links_self_self" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_response_200__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/users"
+            }
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "param_user_with" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
 }
