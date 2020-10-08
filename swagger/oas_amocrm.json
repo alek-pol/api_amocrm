@@ -34,17 +34,23 @@
   }, {
     "name" : "Users",
     "description" : "Пользователи"
+  }, {
+    "name" : "Leads",
+    "description" : "Сделки"
+  }, {
+    "name" : "Roles",
+    "description" : "Роли"
   } ],
   "paths" : {
     "/api/v4/users" : {
       "get" : {
         "tags" : [ "Users" ],
         "summary" : "Список пользователей",
-        "description" : "## Метод позволяет получить список состоящих в аккаунте пользователей.\n__Метод доступен только с правами администратора аккаунта!__\n  \n---\n## Метод возвращает коллекцию моделей пользователей,\n  Объекты прав имеют общую структуру. В зависимости от типа сущности, имеют в себе доступные действия, как ключи, и право на действие, как значение. \n  \n  Например, rights[leads][view]=A.\n",
+        "description" : "## Метод позволяет получить список состоящих в аккаунте пользователей.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n  \n---\n## Метод возвращает коллекцию моделей пользователей,\n  Объекты прав имеют общую структуру. В зависимости от типа сущности, имеют в себе доступные действия, как ключи, и право на действие, как значение. \n  \n  Например, rights[leads][view]=A.\n",
         "parameters" : [ {
           "name" : "with",
           "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -54,7 +60,7 @@
         }, {
           "name" : "limit",
           "in" : "query",
-          "description" : "Страница выборки",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -64,7 +70,7 @@
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "description" : "Страница выборки",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -104,8 +110,8 @@
                   "_embedded" : {
                     "users" : [ {
                       "id" : 123123,
-                      "name" : "Пользователь для примера 2",
-                      "email" : "example2@mail.com",
+                      "name" : "Пользователь для примера 3",
+                      "email" : "example3@mail.com",
                       "lang" : "en",
                       "rights" : {
                         "leads" : {
@@ -237,32 +243,61 @@
             "description" : "Не хватает прав для вызова данного метода"
           }
         }
+      },
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Добавление пользователей",
+        "description" : "## Метод позволяет добавлять пользователей в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта;\n- Метод позволяет добавлять не более 10 пользователей за один запрос;\n- Метод становится недоступен, когда количество пользователей превышает 100.\n",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/create_users"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные."
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
       }
     },
     "/api/v4/users/{id}" : {
       "get" : {
         "tags" : [ "Users" ],
         "summary" : "Получение пользователя по ID",
-        "description" : "## Метод позволяет получить данные конкретного пользователя, состоящего в аккаунте, по ID.\n__Метод доступен только с правами администратора аккаунта!__\n",
+        "description" : "## Метод позволяет получить данные конкретного пользователя, состоящего в аккаунте, по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
         "parameters" : [ {
-          "name" : "with",
-          "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "name" : "id",
           "in" : "path",
-          "description" : "ID",
+          "description" : "ID сущности",
           "required" : true,
           "style" : "simple",
           "explode" : false,
           "schema" : {
             "type" : "integer"
+          }
+        }, {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -271,7 +306,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/users"
+                  "$ref" : "#/components/schemas/inline_response_200_1"
                 },
                 "example" : {
                   "id" : 185848,
@@ -357,11 +392,327 @@
         }
       }
     },
+    "/api/v4/roles" : {
+      "get" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Список ролей пользователей",
+        "description" : "## Метод позволяет получить список ролей пользователей в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n---\n__Общие обозначения прав пользователей:__ \n- __A__ - access - Доступен весь функционал;\n- __G__ - group - Функционал доступен, если ответственный состоит в той же группе, что и ответственный пользователь;\n- __M__ - main - Функционал доступен, если ответственным является текущий пользователь;\n- __D__ - denied - Функционал недоступен;\n",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Добавление ролей",
+        "description" : "## Метод позволяет добавлять роли в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/create_roles"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201_1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v4/roles/{id}" : {
+      "get" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Получение роли по ID",
+        "description" : "## Метод позволяет получить данные конкретной роли аккаунта по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_3"
+                },
+                "example" : {
+                  "id" : 107995,
+                  "name" : "Роль",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "contacts" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "companies" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : false,
+                    "status_rights" : [ {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3104455,
+                      "status_id" : 31881115,
+                      "rights" : {
+                        "edit" : "A",
+                        "view" : "A",
+                        "delete" : "A"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 32311027,
+                      "rights" : {
+                        "edit" : "A",
+                        "view" : "A",
+                        "delete" : "A"
+                      }
+                    } ]
+                  },
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/roles/107995"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Удаление роли",
+        "description" : "## Метод позволяет удалить роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Роль была успешно удалена (Метод не возвращает тело)",
+            "headers" : {
+              "status" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "204 No Content"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          },
+          "404" : {
+            "description" : "Роль не найдена"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Редактирование роли",
+        "description" : "## Метод позволяет редактировать роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/update_roles"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201_2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v4/leads" : {
+      "get" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Список сделок",
+        "description" : "## Метод позволяет получить список сделок в аккаунте.\n",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n\n- `catalog_elements` - Добавляет в ответ связанные со сделками элементы списков; \n\n - `is_price_modified_by_robot` - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n\n - `loss_reason` - Добавляет в ответ расширенную информацию по причине отказа; \n\n - `contacts` - Добавляет в ответ информацию о связанных со сделкой контактах; \n\n - `only_deleted` - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true \n\n - `source_id` - Добавляет в ответ ID источника",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "query",
+          "in" : "query",
+          "description" : "Поисковый запрос (Осуществляет поиск по заполненным полям сущности)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/query"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_4"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
     "/oauth2/access_token" : {
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Получение / Обновление access token",
-        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграцииж\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграцииж\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
+        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -397,7 +748,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_1"
+                  "$ref" : "#/components/schemas/inline_response_200_5"
                 }
               }
             }
@@ -516,39 +867,317 @@
             "description" : "Язык пользователя. Один из вариантов ( ru / en / es )"
           },
           "rights" : {
-            "$ref" : "#/components/schemas/users_rights"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/links_self"
-          },
-          "_embedded" : {
-            "$ref" : "#/components/schemas/users__embedded"
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/rights"
+            }, {
+              "$ref" : "#/components/schemas/rights_extended"
+            } ]
           }
         }
       },
-      "rights_simple" : {
+      "roles" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID роли"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Название роли"
+          },
+          "rights" : {
+            "$ref" : "#/components/schemas/rights"
+          }
+        }
+      },
+      "leads" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID сделки"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Название сделки"
+          },
+          "price" : {
+            "type" : "integer",
+            "description" : "Бюджет сделки"
+          }
+        }
+      },
+      "rights" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к сделкам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "contacts" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к контактам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "companies" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к компаниям"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "tasks" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к задачам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_task"
+            } ]
+          },
+          "mail_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу почты"
+          },
+          "catalog_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу списков"
+          },
+          "status_rights" : {
+            "type" : "array",
+            "description" : "Массив из объектов, которые описывают права на статусы",
+            "items" : {
+              "$ref" : "#/components/schemas/rights_status_rights"
+            }
+          }
+        }
+      },
+      "rights_extended" : {
+        "type" : "object",
+        "properties" : {
+          "is_admin" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь администратором"
+          },
+          "is_free" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь бесплатным"
+          },
+          "is_active" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь активным"
+          },
+          "group_id" : {
+            "type" : "integer",
+            "description" : "ID группы, к которой относится пользователь",
+            "nullable" : true
+          },
+          "role_id" : {
+            "type" : "integer",
+            "description" : "ID роли, которая установлена у пользователя",
+            "nullable" : true
+          }
+        }
+      },
+      "rights_for_req" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к сделкам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "contacts" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к контактам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "companies" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к компаниям. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "tasks" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к задачам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_task"
+            } ]
+          },
+          "mail_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу почты. По умолчанию: false"
+          },
+          "catalog_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу списков. По умолчанию: false"
+          },
+          "status_rights" : {
+            "type" : "array",
+            "description" : "Права пользователя на статусы. Необязательное поле, по умолчанию: null",
+            "nullable" : true,
+            "items" : {
+              "$ref" : "#/components/schemas/rights_status_rights"
+            }
+          }
+        },
+        "description" : "Права пользователя. Поле не является обязательным, по умолчанию все доступы запрещены"
+      },
+      "rights_extended_for_req" : {
+        "type" : "object",
+        "properties" : {
+          "is_admin" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь администратором"
+          },
+          "is_free" : {
+            "type" : "boolean",
+            "description" : "Показатель, является ли пользователь бесплатным. По умолчанию: false"
+          },
+          "group_id" : {
+            "type" : "integer",
+            "description" : "ID группы, к которой принадлежит пользователь. По умолчанию: null",
+            "nullable" : true
+          },
+          "role_id" : {
+            "type" : "integer",
+            "description" : "ID роли, к которой принадлежит пользователь. По умолчанию: null",
+            "nullable" : true
+          }
+        }
+      },
+      "right_group_all" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/view_4"
+        }, {
+          "$ref" : "#/components/schemas/edit_4"
+        }, {
+          "$ref" : "#/components/schemas/add_2"
+        }, {
+          "$ref" : "#/components/schemas/delete_4"
+        }, {
+          "$ref" : "#/components/schemas/export_4"
+        } ]
+      },
+      "right_group_for_task" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/edit_4"
+        }, {
+          "$ref" : "#/components/schemas/delete_4"
+        } ]
+      },
+      "right_group_for_status" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/view_2"
+        }, {
+          "$ref" : "#/components/schemas/edit_2"
+        }, {
+          "$ref" : "#/components/schemas/delete_2"
+        }, {
+          "$ref" : "#/components/schemas/export_2"
+        } ]
+      },
+      "add_2" : {
+        "type" : "object",
+        "properties" : {
+          "add" : {
+            "type" : "string",
+            "description" : "Создание (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "view_2" : {
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "type" : "string",
+            "description" : "Просмотр (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "edit_2" : {
+        "type" : "object",
+        "properties" : {
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "delete_2" : {
+        "type" : "object",
+        "properties" : {
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "export_2" : {
+        "type" : "object",
+        "properties" : {
+          "export" : {
+            "type" : "string",
+            "description" : "Экспорт (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "view_4" : {
         "type" : "object",
         "properties" : {
           "view" : {
             "type" : "string",
             "description" : "Просмотр (допустимые значения - A / G / M / D )",
             "enum" : [ "A", "G", "M", "D" ]
-          },
+          }
+        }
+      },
+      "edit_4" : {
+        "type" : "object",
+        "properties" : {
           "edit" : {
             "type" : "string",
             "description" : "Правка (допустимые значения - A / G / M / D )",
             "enum" : [ "A", "G", "M", "D" ]
-          },
-          "add" : {
-            "type" : "string",
-            "description" : "Создание (допустимые значения - A / D )",
-            "enum" : [ "A", "D" ]
-          },
+          }
+        }
+      },
+      "delete_4" : {
+        "type" : "object",
+        "properties" : {
           "delete" : {
             "type" : "string",
             "description" : "Удаление (допустимые значения - A / G / M / D )",
             "enum" : [ "A", "G", "M", "D" ]
-          },
+          }
+        }
+      },
+      "export_4" : {
+        "type" : "object",
+        "properties" : {
           "export" : {
             "type" : "string",
             "description" : "Экспорт (допустимые значения - A / G / M / D )",
@@ -557,26 +1186,12 @@
         }
       },
       "links" : {
-        "required" : [ "self" ],
         "type" : "object",
         "properties" : {
-          "self" : {
-            "$ref" : "#/components/schemas/link_obj"
-          },
-          "first" : {
-            "$ref" : "#/components/schemas/link_obj"
-          },
-          "prev" : {
-            "$ref" : "#/components/schemas/link_obj"
-          },
-          "next" : {
-            "$ref" : "#/components/schemas/link_obj"
-          },
-          "last" : {
-            "$ref" : "#/components/schemas/link_obj"
+          "_links" : {
+            "$ref" : "#/components/schemas/links__links"
           }
-        },
-        "description" : "Ссылка на страницу"
+        }
       },
       "link_obj" : {
         "type" : "object",
@@ -589,33 +1204,143 @@
       "links_self" : {
         "type" : "object",
         "properties" : {
-          "self" : {
-            "$ref" : "#/components/schemas/links_self_self"
+          "_links" : {
+            "$ref" : "#/components/schemas/links_self__links"
+          }
+        }
+      },
+      "embedded_for_users" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "$ref" : "#/components/schemas/embedded_for_users__embedded"
+          }
+        }
+      },
+      "embedded_for_roles" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "$ref" : "#/components/schemas/embedded_for_roles__embedded"
+          }
+        }
+      },
+      "result_tpp" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer"
+          },
+          "_page" : {
+            "type" : "integer"
+          },
+          "_page_count" : {
+            "type" : "integer"
           }
         }
       },
       "inline_response_200" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/result_tpp"
+        }, {
+          "$ref" : "#/components/schemas/links"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_201" : {
         "type" : "object",
         "properties" : {
           "_total_items" : {
             "type" : "integer",
-            "description" : "Количество найденных записей"
-          },
-          "_page" : {
-            "type" : "integer",
-            "description" : "Страница"
-          },
-          "_page_count" : {
-            "type" : "integer",
-            "description" : "Количество страниц"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/links"
+            "description" : "Количество созданных записей"
           },
           "_embedded" : {
-            "$ref" : "#/components/schemas/inline_response_200__embedded"
+            "$ref" : "#/components/schemas/inline_response_201__embedded"
           }
         }
+      },
+      "inline_response_200_1" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/users"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "$ref" : "#/components/schemas/embedded_for_users"
+        } ]
+      },
+      "inline_response_200_2" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/result_tpp"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_2__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_201_1" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer",
+            "description" : "Количество созданных записей"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/inline_response_201_1__embedded"
+          }
+        }
+      },
+      "inline_response_200_3" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/roles"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "$ref" : "#/components/schemas/embedded_for_roles"
+        } ]
+      },
+      "inline_response_201_2" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/roles"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        } ]
+      },
+      "query" : {
+        "oneOf" : [ {
+          "type" : "string"
+        }, {
+          "type" : "integer"
+        } ]
+      },
+      "inline_response_200_4" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "_page" : {
+              "type" : "integer"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/links"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_4__embedded"
+            }
+          }
+        } ]
       },
       "body" : {
         "oneOf" : [ {
@@ -624,7 +1349,7 @@
           "$ref" : "#/components/schemas/refresh_token"
         } ]
       },
-      "inline_response_200_1" : {
+      "inline_response_200_5" : {
         "type" : "object",
         "properties" : {
           "token_type" : {
@@ -666,49 +1391,7 @@
           }
         }
       },
-      "users_rights_tasks" : {
-        "type" : "object",
-        "properties" : {
-          "edit" : {
-            "type" : "string",
-            "description" : "Правка (допустимые значения - A / G / M / D )",
-            "enum" : [ "A", "G", "M", "D" ]
-          },
-          "delete" : {
-            "type" : "string",
-            "description" : "Удаление (допустимые значения - A / G / M / D )",
-            "enum" : [ "A", "G", "M", "D" ]
-          }
-        },
-        "description" : "Объект прав доступа к задачам"
-      },
-      "users_rights_rights" : {
-        "type" : "object",
-        "properties" : {
-          "view" : {
-            "type" : "string",
-            "description" : "Просмотр (допустимые значения - A / D )",
-            "enum" : [ "A", "D" ]
-          },
-          "edit" : {
-            "type" : "string",
-            "description" : "Правка (допустимые значения - A / D )",
-            "enum" : [ "A", "D" ]
-          },
-          "delete" : {
-            "type" : "string",
-            "description" : "Удаление (допустимые значения - A / D )",
-            "enum" : [ "A", "D" ]
-          },
-          "export" : {
-            "type" : "string",
-            "description" : "Экспорт (допустимые значения - A / D )",
-            "enum" : [ "A", "D" ]
-          }
-        },
-        "description" : "Объект прав"
-      },
-      "users_rights_status_rights" : {
+      "rights_status_rights" : {
         "type" : "object",
         "properties" : {
           "entity_type" : {
@@ -724,95 +1407,53 @@
             "description" : "ID статуса"
           },
           "rights" : {
-            "$ref" : "#/components/schemas/users_rights_rights"
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_status"
+            } ]
           }
         }
       },
-      "users_rights" : {
+      "links__links" : {
+        "required" : [ "self" ],
         "type" : "object",
         "properties" : {
-          "leads" : {
-            "allOf" : [ {
-              "type" : "object",
-              "description" : "Объект прав доступа к сделкам"
-            }, {
-              "$ref" : "#/components/schemas/rights_simple"
-            } ]
+          "self" : {
+            "$ref" : "#/components/schemas/link_obj"
           },
-          "contacts" : {
-            "allOf" : [ {
-              "type" : "object",
-              "description" : "Объект прав доступа к контактам"
-            }, {
-              "$ref" : "#/components/schemas/rights_simple"
-            } ]
+          "first" : {
+            "$ref" : "#/components/schemas/link_obj"
           },
-          "companies" : {
-            "allOf" : [ {
-              "type" : "object",
-              "description" : "Объект прав доступа к компаниям"
-            }, {
-              "$ref" : "#/components/schemas/rights_simple"
-            } ]
+          "prev" : {
+            "$ref" : "#/components/schemas/link_obj"
           },
-          "tasks" : {
-            "$ref" : "#/components/schemas/users_rights_tasks"
+          "next" : {
+            "$ref" : "#/components/schemas/link_obj"
           },
-          "mail_access" : {
-            "type" : "boolean",
-            "description" : "Доступ к функционалу почты"
-          },
-          "catalog_access" : {
-            "type" : "boolean",
-            "description" : "Доступ к функционалу списков"
-          },
-          "status_rights" : {
-            "type" : "array",
-            "description" : "Массив из объектов, которые описывают права на статусы",
-            "nullable" : true,
-            "items" : {
-              "$ref" : "#/components/schemas/users_rights_status_rights"
-            }
-          },
-          "is_admin" : {
-            "type" : "boolean",
-            "description" : "Является ли пользователь администратором"
-          },
-          "is_free" : {
-            "type" : "boolean",
-            "description" : "Является ли пользователь бесплатным"
-          },
-          "is_active" : {
-            "type" : "boolean",
-            "description" : "Является ли пользователь активным"
-          },
-          "group_id" : {
-            "type" : "integer",
-            "description" : "ID группы, к которой относится пользователь",
-            "nullable" : true
-          },
-          "role_id" : {
-            "type" : "integer",
-            "description" : "ID роли, которая установлена у пользователя",
-            "nullable" : true
+          "last" : {
+            "$ref" : "#/components/schemas/link_obj"
           }
         }
       },
-      "users__embedded_roles" : {
+      "links_self__links_self" : {
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "integer"
-          },
-          "name" : {
+          "href" : {
             "type" : "string"
-          },
-          "_links" : {
-            "$ref" : "#/components/schemas/links_self"
           }
         }
       },
-      "users__embedded_groups" : {
+      "links_self__links" : {
+        "type" : "object",
+        "properties" : {
+          "self" : {
+            "$ref" : "#/components/schemas/links_self__links_self"
+          }
+        }
+      },
+      "embedded_for_users__embedded_groups" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -823,28 +1464,44 @@
           }
         }
       },
-      "users__embedded" : {
+      "embedded_for_users__embedded" : {
         "type" : "object",
         "properties" : {
           "roles" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/users__embedded_roles"
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer"
+                  },
+                  "name" : {
+                    "type" : "string"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
             }
           },
           "groups" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/users__embedded_groups"
+              "$ref" : "#/components/schemas/embedded_for_users__embedded_groups"
             }
           }
         }
       },
-      "links_self_self" : {
+      "embedded_for_roles__embedded" : {
         "type" : "object",
         "properties" : {
-          "href" : {
-            "type" : "string"
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "description" : "id пользователей"
+            }
           }
         }
       },
@@ -854,22 +1511,329 @@
           "users" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/users"
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/users"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              }, {
+                "$ref" : "#/components/schemas/embedded_for_users"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_201__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/users"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "request_id" : {
+                    "type" : "string"
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_2__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/roles"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              }, {
+                "$ref" : "#/components/schemas/embedded_for_roles"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_201_1__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/roles"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "request_id" : {
+                    "type" : "string"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_4__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/leads"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "200_users_create" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_201"
             }
           }
         }
       }
     },
     "parameters" : {
-      "param_user_with" : {
+      "id" : {
+        "name" : "id",
+        "in" : "path",
+        "description" : "ID сущности",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "page" : {
+        "name" : "page",
+        "in" : "query",
+        "description" : "Страница выборки",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "limit" : {
+        "name" : "limit",
+        "in" : "query",
+        "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "with_for_users" : {
         "name" : "with",
         "in" : "query",
-        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь )",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
         "required" : false,
         "style" : "form",
         "explode" : true,
         "schema" : {
           "type" : "string"
+        }
+      },
+      "with_for_roles" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "with_for_leads" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n\n- `catalog_elements` - Добавляет в ответ связанные со сделками элементы списков; \n\n - `is_price_modified_by_robot` - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n\n - `loss_reason` - Добавляет в ответ расширенную информацию по причине отказа; \n\n - `contacts` - Добавляет в ответ информацию о связанных со сделкой контактах; \n\n - `only_deleted` - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true \n\n - `source_id` - Добавляет в ответ ID источника",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "query" : {
+        "name" : "query",
+        "in" : "query",
+        "description" : "Поисковый запрос (Осуществляет поиск по заполненным полям сущности)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/query"
+        }
+      }
+    },
+    "requestBodies" : {
+      "create_users" : {
+        "description" : "### Параметры запроса\n__В данном методе параметры запроса имеют зависимости:__\n- Если передано валидное значение role_id, то значения полей _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}, status_rights: {}, mail_access: , catalog_access: {}}\"_ - будут проигнорированы\n- Если передано значение true в поле is_free, то значения полей _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}, status_rights: {}, mail_access: , catalog_access: {}, role_id:, group_id:}\"_ - будут проигнорированы\n- В случае передачи значение null в поле _\"rights: {group_id: null}\"_, пользователь будет добавлен в группу по-умолчанию – “Отдел продаж”\n- “Администратор” и “Бесплатные пользователи” не являются ролями, для обозначения заведены отдельные флаги _\"rights: {is_free:}\"_ и _\"rights: {is_admin:}\"_\n- Если передать поле _\"rights: {status_rights: null}\"_, пользователь получит права на статусы неразобранного без доступа к ним\n  Поля _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}}\"_ должны учитывать [зависимость прав](https://www.amocrm.ru/developers/content/crm_platform/users-api#rights-dependence).\n",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "required" : [ "email", "name", "password" ],
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "description" : "Полное имя пользователя. Значение не должно содержать спец символов кроме .@-_, состоять изпробелов, содержать ссылок, а также не может быть более 50 символов. При создании нового пользователя, поле является обязательным"
+                  },
+                  "email" : {
+                    "type" : "string",
+                    "description" : "E-mail пользователя. Поле является обязательным"
+                  },
+                  "password" : {
+                    "type" : "string",
+                    "description" : ":Пароль пользователя, должно состоять минимум из 6 символов и иметь хотя бы 1 цифру, маленькую и заглавную букву (При создании нового пользователя, поле является обязательным)"
+                  },
+                  "lang" : {
+                    "type" : "string",
+                    "description" : "Язык пользователя. Выбор из вариантов: en / ru / es. По умолчанию – язык аккаунта (ru или en)"
+                  },
+                  "rights" : {
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/rights_for_req"
+                    }, {
+                      "$ref" : "#/components/schemas/rights_extended_for_req"
+                    }, {
+                      "required" : [ "companies", "contacts", "leads", "tasks" ]
+                    } ]
+                  },
+                  "request_id" : {
+                    "type" : "string",
+                    "description" : "Поле, которое вернется вам в ответе без изменений и не будет сохранено."
+                  }
+                }
+              }
+            },
+            "examples" : {
+              "testUser" : {
+                "value" : [ {
+                  "name" : "testUser",
+                  "email" : "test_user@test.com",
+                  "password" : "uadTea81!",
+                  "lang" : "en",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "contacts" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "companies" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : false,
+                    "is_admin" : false,
+                    "is_free" : false,
+                    "is_active" : true
+                  },
+                  "request_id" : "11"
+                } ]
+              },
+              "freeUser" : {
+                "value" : [ {
+                  "name" : "freeUser",
+                  "email" : "free_user@test.com",
+                  "password" : "uadTea82!",
+                  "lang" : "en",
+                  "rights" : {
+                    "is_free" : true,
+                    "is_active" : true
+                  },
+                  "request_id" : "12"
+                } ]
+              }
+            }
+          }
+        }
+      },
+      "create_roles" : {
+        "description" : "### Параметры запроса\n",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "required" : [ "name" ],
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "description" : "Название роли"
+                  },
+                  "rights" : {
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/rights_for_req"
+                    } ]
+                  },
+                  "request_id" : {
+                    "type" : "string",
+                    "description" : "Поле, которое вернется вам в ответе без изменений и не будет сохранено."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "update_roles" : {
+        "description" : "### Параметры запроса\n- Обязательных полей нет, но запрос не может быть пустым.\n- Если параметр rights[status_rights] имеет значение null или [], то права на статусы сделок для данной роли будут удалены, в таком случае права на статусы неразобранного останутся и на каждое действие будет выставлено значение запрещен.\n",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "description" : "Название роли"
+                },
+                "rights" : {
+                  "allOf" : [ {
+                    "$ref" : "#/components/schemas/rights_for_req"
+                  } ]
+                }
+              }
+            }
+          }
         }
       }
     },
