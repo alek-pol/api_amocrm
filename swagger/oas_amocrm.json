@@ -38,6 +38,12 @@
     "name" : "Leads",
     "description" : "Сделки"
   }, {
+    "name" : "Incoming leads",
+    "description" : "Неразобранные заявки"
+  }, {
+    "name" : "Events",
+    "description" : "События"
+  }, {
     "name" : "Roles",
     "description" : "Роли"
   }, {
@@ -50,15 +56,17 @@
         "tags" : [ "Users" ],
         "summary" : "Список пользователей",
         "description" : "## Метод позволяет получить список состоящих в аккаунте пользователей.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n  \n---\n## Метод возвращает коллекцию моделей пользователей,\n  Объекты прав имеют общую структуру. В зависимости от типа сущности, имеют в себе доступные действия, как ключи, и право на действие, как значение. \n  \n  Например, rights[leads][view]=A.\n",
+        "operationId" : "get_users",
         "parameters" : [ {
           "name" : "with",
           "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
           "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "role, group"
           }
         }, {
           "name" : "limit",
@@ -68,7 +76,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 2
           }
         }, {
           "name" : "page",
@@ -78,7 +87,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 1
           }
         } ],
         "responses" : {
@@ -251,6 +261,7 @@
         "tags" : [ "Users" ],
         "summary" : "Добавление пользователей",
         "description" : "## Метод позволяет добавлять пользователей в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта;\n- Метод позволяет добавлять не более 10 пользователей за один запрос;\n- Метод становится недоступен, когда количество пользователей превышает 100.\n",
+        "operationId" : "add_users",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/create_users"
         },
@@ -282,6 +293,7 @@
         "tags" : [ "Users" ],
         "summary" : "Получение пользователя по ID",
         "description" : "## Метод позволяет получить данные конкретного пользователя, состоящего в аккаунте, по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_user_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -290,17 +302,19 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         }, {
           "name" : "with",
           "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
           "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "role, group"
           }
         } ],
         "responses" : {
@@ -400,6 +414,7 @@
         "tags" : [ "Roles" ],
         "summary" : "Список ролей пользователей",
         "description" : "## Метод позволяет получить список ролей пользователей в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n---\n__Общие обозначения прав пользователей:__ \n- __A__ - access - Доступен весь функционал;\n- __G__ - group - Функционал доступен, если ответственный состоит в той же группе, что и ответственный пользователь;\n- __M__ - main - Функционал доступен, если ответственным является текущий пользователь;\n- __D__ - denied - Функционал недоступен;\n",
+        "operationId" : "get_roles",
         "parameters" : [ {
           "name" : "with",
           "in" : "query",
@@ -408,7 +423,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "users"
           }
         }, {
           "name" : "limit",
@@ -418,7 +434,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 2
           }
         }, {
           "name" : "page",
@@ -428,7 +445,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 1
           }
         } ],
         "responses" : {
@@ -454,6 +472,7 @@
         "tags" : [ "Roles" ],
         "summary" : "Добавление ролей",
         "description" : "## Метод позволяет добавлять роли в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_roles",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/create_roles"
         },
@@ -482,6 +501,7 @@
         "tags" : [ "Roles" ],
         "summary" : "Получение роли по ID",
         "description" : "## Метод позволяет получить данные конкретной роли аккаунта по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_role_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -490,7 +510,8 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         }, {
           "name" : "with",
@@ -500,7 +521,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "users"
           }
         } ],
         "responses" : {
@@ -583,6 +605,7 @@
         "tags" : [ "Roles" ],
         "summary" : "Удаление роли",
         "description" : "## Метод позволяет удалить роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "del_role_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -591,7 +614,8 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         } ],
         "responses" : {
@@ -626,6 +650,7 @@
         "tags" : [ "Roles" ],
         "summary" : "Редактирование роли",
         "description" : "## Метод позволяет редактировать роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_role_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -634,7 +659,8 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         } ],
         "requestBody" : {
@@ -665,15 +691,17 @@
         "tags" : [ "Leads" ],
         "summary" : "Список сделок",
         "description" : "## Метод позволяет получить список сделок в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_leads",
         "parameters" : [ {
           "name" : "with",
           "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n\n- `catalog_elements` - Добавляет в ответ связанные со сделками элементы списков; \n\n - `is_price_modified_by_robot` - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n\n - `loss_reason` - Добавляет в ответ расширенную информацию по причине отказа; \n\n - `contacts` - Добавляет в ответ информацию о связанных со сделкой контактах; \n\n - `only_deleted` - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true \n\n - `source_id` - Добавляет в ответ ID источника",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
           "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "contacts"
           }
         }, {
           "name" : "limit",
@@ -683,7 +711,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 2
           }
         }, {
           "name" : "page",
@@ -693,7 +722,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 1
           }
         }, {
           "name" : "query",
@@ -794,6 +824,7 @@
         "tags" : [ "Leads" ],
         "summary" : "Добавление сделок",
         "description" : "## Метод позволяет добавлять сделки в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_leads",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/leads_create"
         },
@@ -807,6 +838,12 @@
                 }
               }
             }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
           }
         }
       },
@@ -814,6 +851,7 @@
         "tags" : [ "Leads" ],
         "summary" : "Редактирование сделок",
         "description" : "## Метод позволяет редактировать сделки пакетно.\n  При редактировании пакетно передается массив из объектов-сделок, при редактировании одной сделки, передается просто модель сделки\n  \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_leads",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/leads_update"
         },
@@ -868,6 +906,7 @@
         "tags" : [ "Leads" ],
         "summary" : "Получение сделки по ID",
         "description" : "## Метод позволяет получить данные конкретной сделки по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_lead_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -876,17 +915,19 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         }, {
           "name" : "with",
           "in" : "query",
-          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n\n- `catalog_elements` - Добавляет в ответ связанные со сделками элементы списков; \n\n - `is_price_modified_by_robot` - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n\n - `loss_reason` - Добавляет в ответ расширенную информацию по причине отказа; \n\n - `contacts` - Добавляет в ответ информацию о связанных со сделкой контактах; \n\n - `only_deleted` - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true \n\n - `source_id` - Добавляет в ответ ID источника",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
           "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "contacts"
           }
         } ],
         "responses" : {
@@ -977,6 +1018,7 @@
         "tags" : [ "Leads" ],
         "summary" : "Редактирование сделок по ID",
         "description" : "## Метод позволяет редактировать сделки по ID.\n  \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_lead_by_id",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -985,7 +1027,8 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer"
+            "type" : "integer",
+            "example" : 121
           }
         } ],
         "requestBody" : {
@@ -1037,11 +1080,41 @@
         }
       }
     },
+    "/api/v2/incoming_leads/sip" : {
+      "post" : {
+        "tags" : [ "Incoming leads" ],
+        "summary" : "Добавление неразобранных заявок",
+        "description" : "## Метод позволяет добавлять неразобранные заявки.\n",
+        "operationId" : "add_incoming_leads",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/leads_create_incoming"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
     "/api/v2/events" : {
       "post" : {
-        "tags" : [ "Telephony" ],
+        "tags" : [ "Events" ],
         "summary" : "Уведомление о входящем звонке",
         "description" : "## Метод позволяет добавлять уведомление о том, что в данный момент происходит звонок по определенному номеру телефона __(с определенного номера)__.\n",
+        "operationId" : "add_events",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/events_add"
         },
@@ -1055,6 +1128,12 @@
                 }
               }
             }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
           }
         }
       }
@@ -1064,6 +1143,7 @@
         "tags" : [ "Calls" ],
         "summary" : "Логирование звонков",
         "description" : "## Метод  позволяет мгновенно добавить примечание о звонке в уже существующую карточку с таким номером телефона. Если карточка с номером не была найдена, то звонок добавлен не будет\n",
+        "operationId" : "add_calls",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/calls_add"
         },
@@ -1092,6 +1172,7 @@
         "tags" : [ "Webhooks" ],
         "summary" : "Список установленных вебхуков",
         "description" : "## Метод позволяет получить список установленных вебхуков в аккаунте. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_webhooks",
         "parameters" : [ {
           "name" : "filter[destination]",
           "in" : "query",
@@ -1149,6 +1230,7 @@
         "tags" : [ "Webhooks" ],
         "summary" : "Подписка на вебхук",
         "description" : "## Метод позволяет подписываться на события, информация о которым придет на указанный адрес. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_webhook",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1192,6 +1274,7 @@
         "tags" : [ "Webhooks" ],
         "summary" : "Отписка от событий",
         "description" : "## Метод позволяет отписать вебхук от получения любых событий. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "del_webhook",
         "parameters" : [ {
           "name" : "destination",
           "in" : "query",
@@ -1222,10 +1305,11 @@
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Получение / Обновление access token",
-        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
+        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для refresh токена – refresh_token);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
+        "operationId" : "access_token",
         "requestBody" : {
           "content" : {
-            "application/json" : {
+            "application/x-www-form-urlencoded" : {
               "schema" : {
                 "$ref" : "#/components/schemas/body_1"
               },
@@ -1288,6 +1372,22 @@
                       "detail" : "Передано некорректное значение"
                     }
                   }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "title" : "Некорректный клиент",
+                  "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                  "status" : 401,
+                  "detail" : "Авторизация клиента не прошла"
                 }
               }
             }
@@ -2061,6 +2161,84 @@
           }
         }
       },
+      "note" : {
+        "type" : "object",
+        "properties" : {
+          "note_type" : {
+            "type" : "integer",
+            "description" : "Тип события",
+            "example" : 7
+          },
+          "element_type" : {
+            "type" : "string",
+            "description" : "Тип сущности элемента",
+            "example" : "lead"
+          },
+          "text" : {
+            "type" : "string",
+            "description" : "Текст события",
+            "example" : "Отправить дубликат договора"
+          }
+        }
+      },
+      "custom_field" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Уникальный идентификатор заполняемого дополнительного поля",
+            "example" : 4399917
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Значения дополнительного поля",
+            "items" : {
+              "oneOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  },
+                  "subtype" : {
+                    "type" : "string",
+                    "description" : "Значения поля (subtype)",
+                    "example" : "WORK"
+                  }
+                }
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  },
+                  "enum" : {
+                    "type" : "string",
+                    "description" : "Значения поля (enum)",
+                    "example" : "WORK"
+                  }
+                }
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  }
+                }
+              }, {
+                "type" : "string",
+                "description" : "Значение поля",
+                "example" : "3692247"
+              } ]
+            }
+          }
+        }
+      },
       "inline_response_200" : {
         "allOf" : [ {
           "$ref" : "#/components/schemas/result_tpp"
@@ -2222,16 +2400,22 @@
         "properties" : {
           "destination" : {
             "type" : "string",
-            "description" : "Валидный URL на который необходимо присылать уведомления"
+            "description" : "Валидный URL на который необходимо присылать уведомления",
+            "example" : "https://gitlab.example.ru/"
           },
           "settings" : {
             "type" : "array",
             "description" : "Действия, на которые подписан вебхук [см список](https://www.amocrm.ru/developers/content/crm_platform/webhooks-api#webhooks-available-actions)",
             "items" : {
               "type" : "string",
+              "example" : "add_contact",
               "enum" : [ "responsible_lead", "responsible_contact", "responsible_company", "responsible_customer", "responsible_task", "restore_lead", "restore_contact", "restore_company", "add_lead", "add_contact", "add_company", "add_customer", "add_task", "update_lead", "update_contact", "update_company", "update_customer", "update_task", "delete_lead", "delete_contact", "delete_company", "delete_customer", "delete_task", "status_lead", "responsible_lead", "note_lead", "note_contact", "note_company", "note_customer" ]
             }
           }
+        },
+        "example" : {
+          "destination" : "https://gitlab.example.ru/",
+          "settings" : [ "add_contact" ]
         }
       },
       "body_1" : {
@@ -2251,7 +2435,8 @@
           },
           "expires_in" : {
             "type" : "integer",
-            "description" : "Время в секундах, показывающее через сколько токен истечет"
+            "description" : "Время в секундах, показывающее через сколько токен истечет",
+            "example" : 86400
           },
           "access_token" : {
             "type" : "string",
@@ -2269,6 +2454,23 @@
           "hint" : {
             "type" : "string"
           },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_response_401" : {
+        "type" : "object",
+        "properties" : {
           "title" : {
             "type" : "string"
           },
@@ -2857,7 +3059,8 @@
         "style" : "simple",
         "explode" : false,
         "schema" : {
-          "type" : "integer"
+          "type" : "integer",
+          "example" : 121
         }
       },
       "page" : {
@@ -2868,7 +3071,8 @@
         "style" : "form",
         "explode" : true,
         "schema" : {
-          "type" : "integer"
+          "type" : "integer",
+          "example" : 1
         }
       },
       "limit" : {
@@ -2879,18 +3083,20 @@
         "style" : "form",
         "explode" : true,
         "schema" : {
-          "type" : "integer"
+          "type" : "integer",
+          "example" : 2
         }
       },
       "with_for_users" : {
         "name" : "with",
         "in" : "query",
-        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`role` - добавляет в ответ роль к которой принадлежит пользователь; `group` - добавляет в ответ группу к которой принадлежит пользователь)",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
         "required" : false,
         "style" : "form",
         "explode" : true,
         "schema" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "role, group"
         }
       },
       "with_for_roles" : {
@@ -2901,18 +3107,20 @@
         "style" : "form",
         "explode" : true,
         "schema" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "users"
         }
       },
       "with_for_leads" : {
         "name" : "with",
         "in" : "query",
-        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n\n- `catalog_elements` - Добавляет в ответ связанные со сделками элементы списков; \n\n - `is_price_modified_by_robot` - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n\n - `loss_reason` - Добавляет в ответ расширенную информацию по причине отказа; \n\n - `contacts` - Добавляет в ответ информацию о связанных со сделкой контактах; \n\n - `only_deleted` - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true \n\n - `source_id` - Добавляет в ответ ID источника",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
         "required" : false,
         "style" : "form",
         "explode" : true,
         "schema" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "contacts"
         }
       },
       "query" : {
@@ -3041,7 +3249,7 @@
         }
       },
       "create_roles" : {
-        "description" : "### Параметры запроса\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3065,7 +3273,50 @@
                   }
                 }
               }
-            }
+            },
+            "example" : [ {
+              "name" : "role 3",
+              "rights" : {
+                "leads" : {
+                  "add" : "A",
+                  "edit" : "G",
+                  "view" : "G",
+                  "delete" : "G",
+                  "export" : "G"
+                },
+                "tasks" : {
+                  "edit" : "A",
+                  "delete" : "A"
+                },
+                "contacts" : {
+                  "add" : "A",
+                  "edit" : "A",
+                  "view" : "A",
+                  "delete" : "A",
+                  "export" : "A"
+                },
+                "companies" : {
+                  "add" : "A",
+                  "edit" : "A",
+                  "view" : "A",
+                  "delete" : "A",
+                  "export" : "A"
+                },
+                "mail_access" : true,
+                "status_rights" : [ {
+                  "entity_type" : "leads",
+                  "pipeline_id" : 16056,
+                  "status_id" : 20542166,
+                  "rights" : {
+                    "edit" : "A",
+                    "view" : "A",
+                    "delete" : "A",
+                    "export" : "A"
+                  }
+                } ],
+                "catalog_access" : true
+              }
+            } ]
           }
         }
       },
@@ -3086,12 +3337,24 @@
                   } ]
                 }
               }
+            },
+            "example" : {
+              "name" : "role 3 modified",
+              "rights" : {
+                "contacts" : {
+                  "add" : "A",
+                  "edit" : "D",
+                  "view" : "D",
+                  "delete" : "D",
+                  "export" : "D"
+                }
+              }
             }
           }
         }
       },
       "leads_create" : {
-        "description" : "### Параметры запроса:\n  Обязательные поля отсутствуют\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3117,7 +3380,7 @@
         }
       },
       "leads_update" : {
-        "description" : "### Параметры запроса:\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3167,7 +3430,7 @@
         }
       },
       "leads_update_id" : {
-        "description" : "### Параметры запроса:\n  Обязательные поля отсутствуют\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3180,8 +3443,198 @@
           }
         }
       },
+      "leads_create_incoming" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "add" : {
+                  "type" : "array",
+                  "items" : {
+                    "required" : [ "incoming_entities", "source_name" ],
+                    "type" : "object",
+                    "properties" : {
+                      "source_name" : {
+                        "type" : "string",
+                        "description" : "Название источника заявки",
+                        "example" : "ОАО Коспромсервис"
+                      },
+                      "source_uid" : {
+                        "type" : "string",
+                        "description" : "Уникальный идентификатор заявки",
+                        "example" : "a1fee7c0fc436088e64ba2e8822ba2b3"
+                      },
+                      "created_at" : {
+                        "type" : "integer",
+                        "description" : "Дата и время создания",
+                        "example" : 1510261200
+                      },
+                      "pipeline_id" : {
+                        "type" : "integer",
+                        "description" : "id цифровой воронки, если параметр не передан, то заявка будет добавлена в неразобранное первой воронки",
+                        "example" : 41563
+                      },
+                      "incoming_entities" : {
+                        "type" : "object",
+                        "properties" : {
+                          "leads" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания новой сделки. Может содержать все параметры и дополнительные поля доступные 'Сделкам' на аккаунте",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Название сделки",
+                                  "example" : "Техническое обслуживание бензопил"
+                                },
+                                "created_at" : {
+                                  "type" : "integer",
+                                  "description" : "Дата создания сделки, передается в Unix Timestamp",
+                                  "example" : 1509483600
+                                },
+                                "status_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID статуса, в который добавляется сделка, по-умолчанию – первый этап главной воронки",
+                                  "example" : 13667502
+                                },
+                                "responsible_user_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID пользователя, ответственного за сделку",
+                                  "example" : 504141
+                                },
+                                "price" : {
+                                  "type" : "integer",
+                                  "description" : "Бюджет сделки",
+                                  "example" : 83000
+                                },
+                                "tags" : {
+                                  "type" : "string",
+                                  "description" : "Название тега",
+                                  "example" : "ТО, услуги"
+                                },
+                                "notes" : {
+                                  "type" : "array",
+                                  "description" : "Список добавляемых событий",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/note"
+                                  }
+                                },
+                                "custom_fields" : {
+                                  "type" : "array",
+                                  "description" : "Дополнительные поля",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/custom_field"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "contacts" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания нового контакта. Может содержать все параметры и дополнительные поля доступные 'Контактам' на аккаунте.",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Полное имя"
+                                },
+                                "date_create" : {
+                                  "type" : "integer",
+                                  "description" : "Дата создания, передается в Unix Timestamp",
+                                  "example" : 1509483600
+                                },
+                                "responsible_user_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID пользователя, ответственного за сделку",
+                                  "example" : 504141
+                                },
+                                "custom_fields" : {
+                                  "type" : "array",
+                                  "description" : "Дополнительные поля",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/custom_field"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "companies" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания новой компании. Может содержать все параметры и дополнительные поля доступные 'Компаниям' на аккаунте",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Наименование компании",
+                                  "example" : "ОАО Коспромсервис"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "description" : "Массив содержащий информацию о создаваемых элементах сущностей. Является обязательным, поскольку после принятия неразобранного, будет создан соответствующий элемент сущности."
+                      },
+                      "incoming_lead_info" : {
+                        "required" : [ "date_call", "duration", "from", "link", "service_code", "to" ],
+                        "type" : "object",
+                        "properties" : {
+                          "to" : {
+                            "type" : "integer",
+                            "description" : "Идентификатор пользователя, который принял звонок",
+                            "example" : 41565
+                          },
+                          "from" : {
+                            "type" : "string",
+                            "description" : "Внешний номер телефона",
+                            "example" : "89456153101"
+                          },
+                          "date_call" : {
+                            "type" : "integer",
+                            "description" : "Дата и время звонка, передается в Unix Timestamp",
+                            "example" : 1509483600
+                          },
+                          "duration" : {
+                            "type" : "integer",
+                            "description" : "Продолжительность звонка",
+                            "example" : 54
+                          },
+                          "link" : {
+                            "type" : "string",
+                            "description" : "Ссылка на запись звонка",
+                            "example" : "https://www.example.com/records/2017/11/01/98431.mp3"
+                          },
+                          "service_code" : {
+                            "type" : "string",
+                            "description" : "Код виджета или сервиса, через который был совершён звонок",
+                            "example" : "CkKwPam6"
+                          },
+                          "uniq" : {
+                            "type" : "string",
+                            "description" : "Уникальный код звонка",
+                            "example" : "a1fee7c0fc436088e64ba2e8822ba2b3ewrw"
+                          },
+                          "add_note" : {
+                            "type" : "string",
+                            "description" : "Примечание",
+                            "example" : "Договорились о сотрудничестве"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "events_add" : {
-        "description" : "### Параметры запроса:\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3217,20 +3670,20 @@
                     }
                   }
                 }
+              },
+              "example" : {
+                "add" : [ {
+                  "type" : "phone_call",
+                  "phone_number" : "+79998885533",
+                  "users" : [ 88888, 99999 ]
+                } ]
               }
-            },
-            "example" : {
-              "add" : [ {
-                "type" : "phone_call",
-                "phone_number" : "+79998885533",
-                "users" : [ 88888, 99999 ]
-              } ]
             }
           }
         }
       },
       "calls_add" : {
-        "description" : "### Параметры запроса:\n",
+        "description" : "Параметры запроса:",
         "content" : {
           "application/json" : {
             "schema" : {
@@ -3248,7 +3701,8 @@
                       },
                       "direction" : {
                         "type" : "string",
-                        "description" : "Тип звонка (inbound – входящий, outbound – исходящий)"
+                        "description" : "Тип звонка (inbound – входящий, outbound – исходящий)",
+                        "enum" : [ "inbound", "outbound" ]
                       },
                       "uniq" : {
                         "type" : "string",
@@ -3264,7 +3718,8 @@
                       },
                       "call_status" : {
                         "type" : "integer",
-                        "description" : "Статус звонка. (1 - Оставил голосовое сообщение; 2 - Перезвонить позже; 3 - Нет на месте; 4 - Разговор состоялся; 5 -\tНеверный номер; 6 -\tНе дозвонился; 7 -\tНомер занят.)"
+                        "description" : "Статус звонка. (1 - Оставил голосовое сообщение; 2 - Перезвонить позже; 3 - Нет на месте; 4 - Разговор состоялся; 5 -  Неверный номер; 6 -  Не дозвонился; 7 -  Номер занят.)",
+                        "enum" : [ 1, 2, 3, 4, 5, 6, 7 ]
                       },
                       "link" : {
                         "type" : "string",
@@ -3293,6 +3748,45 @@
                     }
                   }
                 }
+              },
+              "example" : {
+                "add" : [ {
+                  "uniq" : "394427aaf821879e29efbc4eb98er22171514",
+                  "phone_number" : "71964444444",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 98,
+                  "call_status" : 2,
+                  "call_result" : "Перезвонить позже",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                }, {
+                  "uniq" : "394427aaf821879e29efbc4eb98er22171514",
+                  "phone_number" : "71967777777",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 44,
+                  "call_status" : 4,
+                  "call_result" : "Поговорили",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                }, {
+                  "uniq" : "394427aaf821879e29efbc4eb456t22171514",
+                  "phone_number" : "71961111111",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 120,
+                  "call_status" : 4,
+                  "call_result" : "Поговорили",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                } ]
               }
             }
           }
