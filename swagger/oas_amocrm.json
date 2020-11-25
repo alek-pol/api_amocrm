@@ -9,19 +9,19 @@
     "version" : "4.0.0"
   },
   "servers" : [ {
+    "url" : "https://{domain}",
+    "variables" : {
+      "domain" : {
+        "description" : "Название домена",
+        "default" : "example.amocrm.ru"
+      }
+    }
+  }, {
     "url" : "https://{subdomain}.amocrm.ru",
     "variables" : {
       "subdomain" : {
         "description" : "Название поддомена",
-        "default" : "test_asp8"
-      }
-    }
-  }, {
-    "url" : "https://{domen}",
-    "variables" : {
-      "domen" : {
-        "description" : "Название домена",
-        "default" : "test_asp8"
+        "default" : "example"
       }
     }
   } ],
@@ -1181,7 +1181,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "https://app.swaggerhub.com"
           }
         } ],
         "responses" : {
@@ -1241,7 +1242,7 @@
           }
         },
         "responses" : {
-          "200" : {
+          "201" : {
             "description" : "Запрос выполнен успешно",
             "content" : {
               "application/json" : {
@@ -1281,22 +1282,20 @@
           "required" : false,
           "style" : "form",
           "explode" : true,
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "destination" : {
-                    "type" : "string"
-                  }
-                }
-              }
-            }
+          "schema" : {
+            "type" : "string",
+            "example" : "https://app.swaggerhub.com"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "Запрос выполнен успешно"
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
           }
         }
       }
@@ -2505,7 +2504,7 @@
             "type" : "array",
             "description" : "Массив заполняемых значений",
             "items" : {
-              "oneOf" : [ {
+              "anyOf" : [ {
                 "type" : "object",
                 "properties" : {
                   "value" : {
@@ -3387,6 +3386,7 @@
               "type" : "array",
               "items" : {
                 "allOf" : [ {
+                  "required" : [ "id" ],
                   "type" : "object",
                   "properties" : {
                     "id" : {
@@ -3396,8 +3396,6 @@
                   }
                 }, {
                   "$ref" : "#/components/schemas/leads_req"
-                }, {
-                  "required" : [ "id" ]
                 } ]
               }
             },
