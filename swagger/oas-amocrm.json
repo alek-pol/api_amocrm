@@ -1,0 +1,3802 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "OAS amoCRM",
+    "description" : "OAS for amoCRM",
+    "contact" : {
+      "email" : "alek_pol@outlook.com"
+    },
+    "version" : "4.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://{domain}",
+    "variables" : {
+      "domain" : {
+        "description" : "Название домена",
+        "default" : "example.amocrm.ru"
+      }
+    }
+  }, {
+    "url" : "https://{subdomain}.amocrm.ru",
+    "variables" : {
+      "subdomain" : {
+        "description" : "Название поддомена",
+        "default" : "example"
+      }
+    }
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "Authorization",
+    "description" : "Упрощенная авторизация"
+  }, {
+    "name" : "Users",
+    "description" : "Пользователи"
+  }, {
+    "name" : "Leads",
+    "description" : "Сделки"
+  }, {
+    "name" : "Incoming leads",
+    "description" : "Неразобранные заявки"
+  }, {
+    "name" : "Events",
+    "description" : "События"
+  }, {
+    "name" : "Roles",
+    "description" : "Роли"
+  }, {
+    "name" : "Webhooks",
+    "description" : "Вебхуки!"
+  } ],
+  "paths" : {
+    "/api/v4/users" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Список пользователей",
+        "description" : "## Метод позволяет получить список состоящих в аккаунте пользователей.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n  \n---\n## Метод возвращает коллекцию моделей пользователей,\n  Объекты прав имеют общую структуру. В зависимости от типа сущности, имеют в себе доступные действия, как ключи, и право на действие, как значение. \n  \n  Например, rights[leads][view]=A.\n",
+        "operationId" : "get_users",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "role, group"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 2
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                },
+                "example" : {
+                  "_total_items" : 10,
+                  "_page" : 3,
+                  "_page_count" : 5,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=3"
+                    },
+                    "first" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=1"
+                    },
+                    "prev" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=2"
+                    },
+                    "next" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=4"
+                    },
+                    "last" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/?limit=2&page=5"
+                    }
+                  },
+                  "_embedded" : {
+                    "users" : [ {
+                      "id" : 123123,
+                      "name" : "Пользователь для примера 3",
+                      "email" : "example3@mail.com",
+                      "lang" : "en",
+                      "rights" : {
+                        "leads" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "contacts" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "companies" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "A",
+                          "delete" : "A",
+                          "export" : "A"
+                        },
+                        "tasks" : {
+                          "edit" : "A",
+                          "delete" : "A"
+                        },
+                        "mail_access" : false,
+                        "catalog_access" : false,
+                        "status_rights" : [ {
+                          "entity_type" : "leads",
+                          "pipeline_id" : 2194576,
+                          "status_id" : 30846277,
+                          "rights" : {
+                            "view" : "A",
+                            "edit" : "A",
+                            "delete" : "A"
+                          }
+                        }, {
+                          "entity_type" : "leads",
+                          "pipeline_id" : 2212201,
+                          "status_id" : 30965377,
+                          "rights" : {
+                            "view" : "A",
+                            "edit" : "A",
+                            "delete" : "A"
+                          }
+                        } ],
+                        "is_admin" : false,
+                        "is_free" : false,
+                        "is_active" : true
+                      },
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/users/123123/"
+                        }
+                      },
+                      "_embedded" : {
+                        "roles" : [ {
+                          "id" : 3141,
+                          "name" : "Менеджер",
+                          "_links" : {
+                            "self" : {
+                              "href" : "https://example.amocrm.ru/api/v4/roles/3141"
+                            }
+                          }
+                        } ],
+                        "groups" : [ {
+                          "id" : 267688,
+                          "name" : "Менеджеры"
+                        } ]
+                      }
+                    }, {
+                      "id" : 321321,
+                      "name" : "Пользователь для примера 2",
+                      "email" : "example2@mail.com",
+                      "lang" : "ru",
+                      "rights" : {
+                        "leads" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "G",
+                          "delete" : "D",
+                          "export" : "M"
+                        },
+                        "contacts" : {
+                          "view" : "A",
+                          "edit" : "A",
+                          "add" : "G",
+                          "delete" : "M",
+                          "export" : "D"
+                        },
+                        "companies" : {
+                          "view" : "A",
+                          "edit" : "G",
+                          "add" : "G",
+                          "delete" : "D",
+                          "export" : "D"
+                        },
+                        "tasks" : {
+                          "edit" : "A",
+                          "delete" : "A"
+                        },
+                        "mail_access" : true,
+                        "catalog_access" : true,
+                        "is_admin" : true,
+                        "is_free" : false,
+                        "is_active" : true
+                      },
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/users/321321"
+                        }
+                      },
+                      "_embedded" : {
+                        "roles" : [ ],
+                        "groups" : [ ]
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Добавление пользователей",
+        "description" : "## Метод позволяет добавлять пользователей в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта;\n- Метод позволяет добавлять не более 10 пользователей за один запрос;\n- Метод становится недоступен, когда количество пользователей превышает 100.\n",
+        "operationId" : "add_users",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/create_users"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные."
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      }
+    },
+    "/api/v4/users/{id}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Получение пользователя по ID",
+        "description" : "## Метод позволяет получить данные конкретного пользователя, состоящего в аккаунте, по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_user_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        }, {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "role, group"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_1"
+                },
+                "example" : {
+                  "id" : 185848,
+                  "name" : "Алексей Поимцев",
+                  "email" : "test@example.com",
+                  "lang" : "ru",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "contacts" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "companies" : {
+                      "view" : "M",
+                      "edit" : "M",
+                      "add" : "D",
+                      "delete" : "M",
+                      "export" : "M"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : true,
+                    "status_rights" : [ {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 142,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D",
+                        "export" : "D"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 32311027,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3104455,
+                      "status_id" : 31881115,
+                      "rights" : {
+                        "view" : "D",
+                        "edit" : "D",
+                        "delete" : "D"
+                      }
+                    } ],
+                    "is_admin" : false,
+                    "is_free" : false,
+                    "is_active" : true
+                  },
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/users/185848"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      }
+    },
+    "/api/v4/roles" : {
+      "get" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Список ролей пользователей",
+        "description" : "## Метод позволяет получить список ролей пользователей в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n---\n__Общие обозначения прав пользователей:__ \n- __A__ - access - Доступен весь функционал;\n- __G__ - group - Функционал доступен, если ответственный состоит в той же группе, что и ответственный пользователь;\n- __M__ - main - Функционал доступен, если ответственным является текущий пользователь;\n- __D__ - denied - Функционал недоступен;\n",
+        "operationId" : "get_roles",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "users"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 2
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Добавление ролей",
+        "description" : "## Метод позволяет добавлять роли в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_roles",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/create_roles"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201_1"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v4/roles/{id}" : {
+      "get" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Получение роли по ID",
+        "description" : "## Метод позволяет получить данные конкретной роли аккаунта по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_role_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        }, {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "users"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_3"
+                },
+                "example" : {
+                  "id" : 107995,
+                  "name" : "Роль",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "contacts" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "companies" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "A"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : false,
+                    "status_rights" : [ {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3104455,
+                      "status_id" : 31881115,
+                      "rights" : {
+                        "edit" : "A",
+                        "view" : "A",
+                        "delete" : "A"
+                      }
+                    }, {
+                      "entity_type" : "leads",
+                      "pipeline_id" : 3166396,
+                      "status_id" : 32311027,
+                      "rights" : {
+                        "edit" : "A",
+                        "view" : "A",
+                        "delete" : "A"
+                      }
+                    } ]
+                  },
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/roles/107995"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Удаление роли",
+        "description" : "## Метод позволяет удалить роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "del_role_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Роль была успешно удалена (Метод не возвращает тело)",
+            "headers" : {
+              "status" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "204 No Content"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "403" : {
+            "description" : "Не хватает прав для вызова данного метода"
+          },
+          "404" : {
+            "description" : "Роль не найдена"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Roles" ],
+        "summary" : "Редактирование роли",
+        "description" : "## Метод позволяет редактировать роль в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_role_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/update_roles"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201_2"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v4/leads" : {
+      "get" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Список сделок",
+        "description" : "## Метод позволяет получить список сделок в аккаунте.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_leads",
+        "parameters" : [ {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "contacts"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 2
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Страница выборки",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        }, {
+          "name" : "query",
+          "in" : "query",
+          "description" : "Поисковый запрос (Осуществляет поиск по заполненным полям сущности)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/query"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_4"
+                },
+                "example" : {
+                  "_page" : 2,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads?limit=2&page=2"
+                    },
+                    "next" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads?limit=2&page=3"
+                    },
+                    "first" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads?limit=2&page=1"
+                    },
+                    "prev" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads?limit=2&page=1"
+                    }
+                  },
+                  "_embedded" : {
+                    "leads" : [ {
+                      "id" : 19619,
+                      "name" : "Сделка для примера",
+                      "price" : 46333,
+                      "responsible_user_id" : 123321,
+                      "group_id" : 625,
+                      "status_id" : 142,
+                      "pipeline_id" : 1300,
+                      "created_by" : 321123,
+                      "updated_by" : 321123,
+                      "created_at" : 1453279607,
+                      "updated_at" : 1502193501,
+                      "closed_at" : 1483005931,
+                      "is_deleted" : false,
+                      "account_id" : 5135160,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/19619"
+                        }
+                      },
+                      "_embedded" : {
+                        "tags" : [ ],
+                        "companies" : [ ]
+                      }
+                    }, {
+                      "id" : 14460,
+                      "name" : "Сделка для примера 2",
+                      "price" : 655,
+                      "responsible_user_id" : 123321,
+                      "group_id" : 625,
+                      "status_id" : 142,
+                      "pipeline_id" : 1300,
+                      "created_by" : 321123,
+                      "updated_by" : 321123,
+                      "created_at" : 1453279607,
+                      "updated_at" : 1502193501,
+                      "closed_at" : 1483005931,
+                      "is_deleted" : false,
+                      "account_id" : 1351360,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/14460"
+                        }
+                      },
+                      "_embedded" : {
+                        "tags" : [ ],
+                        "companies" : [ ]
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Добавление сделок",
+        "description" : "## Метод позволяет добавлять сделки в аккаунт пакетно.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_leads",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/leads_create"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Редактирование сделок",
+        "description" : "## Метод позволяет редактировать сделки пакетно.\n  При редактировании пакетно передается массив из объектов-сделок, при редактировании одной сделки, передается просто модель сделки\n  \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_leads",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/leads_update"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_6"
+                },
+                "example" : {
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads"
+                    }
+                  },
+                  "_embedded" : {
+                    "leads" : [ {
+                      "id" : 54886,
+                      "updated_at" : 1597519923,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/54886"
+                        }
+                      }
+                    }, {
+                      "id" : 54884,
+                      "updated_at" : 1597519923,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/54884"
+                        }
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v4/leads/{id}" : {
+      "get" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Получение сделки по ID",
+        "description" : "## Метод позволяет получить данные конкретной сделки по ID.\n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_lead_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        }, {
+          "name" : "with",
+          "in" : "query",
+          "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "contacts"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_7"
+                },
+                "example" : {
+                  "id" : 3912171,
+                  "name" : "Example",
+                  "price" : 12,
+                  "responsible_user_id" : 504141,
+                  "group_id" : 0,
+                  "status_id" : 143,
+                  "pipeline_id" : 3104455,
+                  "loss_reason_id" : 4203748,
+                  "created_by" : 504141,
+                  "updated_by" : 504141,
+                  "created_at" : 1585299171,
+                  "updated_at" : 1590683337,
+                  "closed_at" : 1590683337,
+                  "is_deleted" : false,
+                  "account_id" : 28805383,
+                  "is_price_modified_by_robot" : false,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads/3912171"
+                    }
+                  },
+                  "_embedded" : {
+                    "tags" : [ {
+                      "id" : 100667,
+                      "name" : "тест"
+                    } ],
+                    "catalog_elements" : [ {
+                      "id" : 525439,
+                      "metadata" : {
+                        "quantity" : 1,
+                        "catalog_id" : 4521
+                      }
+                    } ],
+                    "loss_reason" : [ {
+                      "id" : 4203748,
+                      "name" : "Пропала потребность",
+                      "sort" : 100000,
+                      "created_at" : 1582117280,
+                      "updated_at" : 1582117280,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/loss_reasons/4203748"
+                        }
+                      }
+                    } ],
+                    "companies" : [ {
+                      "id" : 10971463,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/companies/10971463"
+                        }
+                      }
+                    } ],
+                    "contacts" : [ {
+                      "id" : 10971465,
+                      "is_main" : true,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/contacts/10971465"
+                        }
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "Сделка с указанным ID не существует"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Leads" ],
+        "summary" : "Редактирование сделок по ID",
+        "description" : "## Метод позволяет редактировать сделки по ID.\n  \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "patch_lead_by_id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID сущности",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 121
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/leads_update_id"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_6"
+                },
+                "example" : {
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads"
+                    }
+                  },
+                  "_embedded" : {
+                    "leads" : [ {
+                      "id" : 54886,
+                      "updated_at" : 1597519923,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/54886"
+                        }
+                      }
+                    }, {
+                      "id" : 54884,
+                      "updated_at" : 1597519923,
+                      "_links" : {
+                        "self" : {
+                          "href" : "https://example.amocrm.ru/api/v4/leads/54884"
+                        }
+                      }
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v2/incoming_leads/sip" : {
+      "post" : {
+        "tags" : [ "Incoming leads" ],
+        "summary" : "Добавление неразобранных заявок",
+        "description" : "## Метод позволяет добавлять неразобранные заявки\n",
+        "operationId" : "add_incoming_leads",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/leads_create_incoming"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v2/events" : {
+      "post" : {
+        "tags" : [ "Events" ],
+        "summary" : "Уведомление о входящем звонке",
+        "description" : "## Метод позволяет добавлять уведомление о том, что в данный момент происходит звонок по определенному номеру телефона __(с определенного номера)__.\n",
+        "operationId" : "add_events",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/events_add"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_8"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v2/calls" : {
+      "post" : {
+        "tags" : [ "Calls" ],
+        "summary" : "Логирование звонков",
+        "description" : "## Метод  позволяет мгновенно добавить примечание о звонке в уже существующую карточку с таким номером телефона. Если карточка с номером не была найдена, то звонок добавлен не будет\n",
+        "operationId" : "add_calls",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/calls_add"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_8"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/api/v4/webhooks" : {
+      "get" : {
+        "tags" : [ "Webhooks" ],
+        "summary" : "Список установленных вебхуков",
+        "description" : "## Метод позволяет получить список установленных вебхуков в аккаунте. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "get_webhooks",
+        "parameters" : [ {
+          "name" : "filter[destination]",
+          "in" : "query",
+          "description" : "Фильтр по точному адресу вебхука",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "https://app.swaggerhub.com"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_9"
+                },
+                "example" : {
+                  "_total_items" : 2,
+                  "_embedded" : {
+                    "webhooks" : [ {
+                      "id" : 839656,
+                      "destination" : "https://webhook-uri.com",
+                      "created_at" : 1575539157,
+                      "updated_at" : 1575539157,
+                      "account_id" : 321321,
+                      "created_by" : 123123,
+                      "sort" : 1,
+                      "disabled" : false,
+                      "settings" : [ "add_task" ]
+                    }, {
+                      "id" : 849193,
+                      "destination" : "https://api.test.ru/amoWebHook",
+                      "created_at" : 1576157524,
+                      "updated_at" : 1585816857,
+                      "account_id" : 321321,
+                      "created_by" : 123123,
+                      "sort" : 2,
+                      "disabled" : true,
+                      "settings" : [ "update_lead" ]
+                    } ]
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Webhooks" ],
+        "summary" : "Подписка на вебхук",
+        "description" : "## Метод позволяет подписываться на события, информация о которым придет на указанный адрес. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "add_webhook",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/webhook"
+                },
+                "example" : {
+                  "id" : 1056949,
+                  "destination" : "https://example.test",
+                  "created_at" : 1589012268,
+                  "updated_at" : 1589012268,
+                  "account_id" : 321321,
+                  "created_by" : 3944275,
+                  "sort" : 1,
+                  "disabled" : false,
+                  "settings" : [ "add_lead" ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          },
+          "422" : {
+            "description" : "Невалидный URL"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Webhooks" ],
+        "summary" : "Отписка от событий",
+        "description" : "## Метод позволяет отписать вебхук от получения любых событий. \n    \n__\"Ограничения:\"__\n- Метод доступен только с правами администратора аккаунта.\n",
+        "operationId" : "del_webhook",
+        "parameters" : [ {
+          "name" : "destination",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "https://app.swaggerhub.com"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно"
+          },
+          "400" : {
+            "description" : "Переданы некорректные данные. Подробности доступны в теле ответа"
+          },
+          "401" : {
+            "description" : "Пользователь не авторизован"
+          }
+        }
+      }
+    },
+    "/oauth2/access_token" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "Получение / Обновление access token",
+        "description" : "## 1. Обмен кода авторизации на access token и refresh token\n  [согласно инструкции начиная со второго шага](\"https://www.amocrm.ru/developers/content/oauth/step-by-step\")\n  т.е. __код авторизации__ берем из __настройки -> интеграции__ без использования редиректов ([Упрощенная авторизация](https://www.amocrm.ru/developers/content/oauth/easy-auth))\n\n### Получив Authorization code, вам необходимо сделать запрос на метод `/oauth2/access_token`. \n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для кода авторизации – authorization_code);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `code` - Полученный код авторизации (Authorization code).\n  \n  #### В ответ вы получите пару `Access token` и `Refresh token`, а также время в секундах, через которое токен истекает.\n  #### Access токен аналогичен ключу сессии. Его можно сохранить в приложении и использовать для запросов к API до истечения времени его жизни.\n---\n## 2. Получение нового access token по его истечении\n  __Обязательные параметры:__\n  - __client_id__ - ID интеграции;\n  - __client_secret__ - Секрет интеграции;\n  - __grant_type__ - Тип авторизационных данных (для refresh токена – refresh_token);\n  - __redirect_uri__ - Redirect URI указанный в настройках интеграции\n  - `refresh_token` - Refresh токен (Из предыдущего пункта)\n    \n  __Refresh token имеет два существенных ограничения его жизни:__\n  - Refresh токен действует __всего 3 месяца__. Если интеграция не используется в течение 3 месяцев, не было ни одного запроса на актуализацию ключа, то интеграция потеряет доступ к данным и будем необходимо повторно запрашивать разрешение у пользователя на доступ к его аккаунту.\n  - Refresh token можно обменять только один раз. После отправки его в метод и получения новой пары __access token/refresh token__ старый refresh token становится не актуальным. И после получения нового refresh token его необходимо обязательно сохранить, иначе придется вновь перезапрашивать доступ у пользователя.\n  ---\n      Токен должен быть доступен только вашему приложению, поэтому не рекомендуется сохранять его в cookies браузера, открытых конфигурационных файлах и т. п.\n",
+        "operationId" : "access_token",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_1"
+              },
+              "examples" : {
+                "autorization" : {
+                  "value" : {
+                    "grant_type" : "authorization_code",
+                    "client_id" : "d0d0d0d0-2222-3333-4444-a0a0a0a0a0a0",
+                    "client_secret" : "LbZ11qlqdikzzgdRHtbKcWIvmfKDEE69UErrOrw9YNbJOrXPjbMXHMLzfd3dgLsA",
+                    "redirect_uri" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0",
+                    "code" : ""
+                  }
+                },
+                "refresh_token" : {
+                  "value" : {
+                    "grant_type" : "refresh_token",
+                    "client_id" : "d0d0d0d0-2222-3333-4444-a0a0a0a0a0a0",
+                    "client_secret" : "LbZ11qlqdikzzgdRHtbKcWIvmfKDEE69UErrOrw9YNbJOrXPjbMXHMLzfd3dgLsA",
+                    "redirect_uri" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0",
+                    "refresh_token" : ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_10"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                },
+                "examples" : {
+                  "badRequest" : {
+                    "value" : {
+                      "hint" : "Authorization code has expired",
+                      "title" : "Некорректный запрос",
+                      "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                      "status" : 400,
+                      "detail" : "В запросе отсутствует ряд параметров или параметры невалидны"
+                    }
+                  },
+                  "access_denied" : {
+                    "value" : {
+                      "title" : "Некорректный тип доступа",
+                      "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                      "status" : 400,
+                      "detail" : "Передано некорректное значение"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "title" : "Некорректный клиент",
+                  "type" : "https://developers.amocrm.ru/v3/errors/OAuthProblemJson",
+                  "status" : 401,
+                  "detail" : "Авторизация клиента не прошла"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "autorization" : {
+        "required" : [ "client_id", "client_secret", "code", "grant_type", "redirect_uri" ],
+        "type" : "object",
+        "properties" : {
+          "grant_type" : {
+            "type" : "string",
+            "description" : "Тип авторизационных данных (для кода авторизации – authorization_code)",
+            "default" : "authorization_code"
+          },
+          "client_id" : {
+            "type" : "string",
+            "description" : "ID интеграции"
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "Секрет интеграции"
+          },
+          "redirect_uri" : {
+            "type" : "string",
+            "description" : "Redirect URI указанный в настройках интеграции",
+            "example" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Полученный код авторизации"
+          }
+        },
+        "description" : "Получение access token и refresh token"
+      },
+      "refresh_token" : {
+        "required" : [ "client_id", "client_secret", "grant_type", "redirect_uri", "refresh_token" ],
+        "type" : "object",
+        "properties" : {
+          "grant_type" : {
+            "type" : "string",
+            "description" : "Тип авторизационных данных (для refresh токена – refresh_token)",
+            "default" : "refresh_token"
+          },
+          "client_id" : {
+            "type" : "string",
+            "description" : "ID интеграции"
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "Секрет интеграции"
+          },
+          "redirect_uri" : {
+            "type" : "string",
+            "description" : "Redirect URI указанный в настройках интеграции",
+            "example" : "https://app.swaggerhub.com/apis/alek-pol/OAS-amoCRM/1.0.0"
+          },
+          "refresh_token" : {
+            "type" : "string",
+            "description" : "Refresh токен"
+          }
+        },
+        "description" : "Обновление access token"
+      },
+      "users" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID пользователя"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Полное имя пользователя"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "E-mail пользователя"
+          },
+          "lang" : {
+            "type" : "string",
+            "description" : "Язык пользователя. Один из вариантов ( ru / en / es )"
+          },
+          "rights" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/rights"
+            }, {
+              "$ref" : "#/components/schemas/rights_extended"
+            } ]
+          }
+        }
+      },
+      "roles" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID роли"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Название роли"
+          },
+          "rights" : {
+            "$ref" : "#/components/schemas/rights"
+          }
+        }
+      },
+      "leads" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "id" : {
+              "type" : "integer",
+              "description" : "ID сделки"
+            },
+            "name" : {
+              "type" : "string",
+              "description" : "Название сделки"
+            },
+            "price" : {
+              "type" : "integer",
+              "description" : "Бюджет сделки"
+            },
+            "responsible_user_id" : {
+              "type" : "integer",
+              "description" : "ID пользователя, ответственного за сделку"
+            },
+            "group_id" : {
+              "type" : "integer",
+              "description" : "ID группы, в которой состоит ответственны пользователь за сделку"
+            },
+            "status_id" : {
+              "type" : "integer",
+              "description" : "ID статуса, в который добавляется сделка, по-умолчанию – первый этап главной воронки"
+            },
+            "pipeline_id" : {
+              "type" : "integer",
+              "description" : "ID воронки, в которую добавляется сделка"
+            },
+            "loss_reason_id" : {
+              "type" : "integer",
+              "description" : "ID причины отказа"
+            },
+            "source_id" : {
+              "type" : "integer",
+              "description" : "ID источника сделки. Требуется GET параметр with."
+            },
+            "created_by" : {
+              "type" : "integer",
+              "description" : "ID пользователя, создающий сделку"
+            },
+            "updated_by" : {
+              "type" : "integer",
+              "description" : "ID пользователя, изменяющий сделку"
+            },
+            "closed_at" : {
+              "type" : "integer",
+              "description" : "Дата закрытия сделки, передается в Unix Timestamp"
+            },
+            "created_at" : {
+              "type" : "integer",
+              "description" : "Дата создания сделки, передается в Unix Timestamp"
+            },
+            "updated_at" : {
+              "type" : "integer",
+              "description" : "Дата изменения сделки, передается в Unix Timestamp"
+            },
+            "closest_task_at" : {
+              "type" : "integer",
+              "description" : "Дата ближайшей задачи к выполнению, передается в Unix Timestamp"
+            },
+            "is_deleted" : {
+              "type" : "boolean",
+              "description" : "Отметка о удалении сделки"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/custom_fields_values"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "score" : {
+              "type" : "integer",
+              "description" : "Скоринг сделки",
+              "nullable" : true
+            },
+            "account_id" : {
+              "type" : "integer",
+              "description" : "ID аккаунта, в котором находится сделка"
+            },
+            "is_price_modified_by_robot" : {
+              "type" : "boolean",
+              "description" : "Изменен ли в последний раз бюджет сделки роботом. Требуется GET параметр with."
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/tags"
+              }, {
+                "$ref" : "#/components/schemas/companies"
+              }, {
+                "$ref" : "#/components/schemas/contacts"
+              }, {
+                "$ref" : "#/components/schemas/catalog_elements"
+              } ]
+            }
+          }
+        } ]
+      },
+      "leads_req" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "name" : {
+              "type" : "string",
+              "description" : "Название сделки"
+            },
+            "price" : {
+              "type" : "integer",
+              "description" : "Бюджет сделки"
+            },
+            "responsible_user_id" : {
+              "type" : "integer",
+              "description" : "ID пользователя, ответственного за сделку"
+            },
+            "status_id" : {
+              "type" : "integer",
+              "description" : "ID статуса, в который добавляется сделка, по-умолчанию – первый этап главной воронки"
+            },
+            "pipeline_id" : {
+              "type" : "integer",
+              "description" : "ID воронки, в которую добавляется сделка"
+            },
+            "loss_reason_id" : {
+              "type" : "integer",
+              "description" : "ID причины отказа"
+            },
+            "created_by" : {
+              "type" : "integer",
+              "description" : "ID пользователя, создающий сделку"
+            },
+            "updated_by" : {
+              "type" : "integer",
+              "description" : "ID пользователя, изменяющий сделку"
+            },
+            "closed_at" : {
+              "type" : "integer",
+              "description" : "Дата закрытия сделки, передается в Unix Timestamp"
+            },
+            "created_at" : {
+              "type" : "integer",
+              "description" : "Дата создания сделки, передается в Unix Timestamp"
+            },
+            "updated_at" : {
+              "type" : "integer",
+              "description" : "Дата изменения сделки, передается в Unix Timestamp"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/custom_fields_values"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/tags"
+              } ]
+            },
+            "request_id" : {
+              "type" : "string",
+              "description" : "Поле, которое вернется вам в ответе без изменений и не будет сохранено. Поле не является обязательным"
+            }
+          }
+        } ]
+      },
+      "custom_fields_values" : {
+        "type" : "object",
+        "properties" : {
+          "custom_fields_values" : {
+            "type" : "array",
+            "description" : "Массив, содержащий информацию по значениям дополнительных полей, задаваемых для сущности [примеры заполнения полей](https://www.amocrm.ru/developers/content/crm_platform/custom-fields#cf-fill-examples)",
+            "nullable" : true,
+            "items" : {
+              "$ref" : "#/components/schemas/custom_fields_values_custom_fields_values"
+            }
+          }
+        }
+      },
+      "tags" : {
+        "type" : "object",
+        "properties" : {
+          "tags" : {
+            "type" : "array",
+            "description" : "Данные тегов, привязанных к сделке",
+            "items" : {
+              "$ref" : "#/components/schemas/tags_tags"
+            }
+          }
+        }
+      },
+      "companies" : {
+        "type" : "object",
+        "properties" : {
+          "companies" : {
+            "type" : "array",
+            "description" : "Данные компании, привязанной к сделке (в данном массиве всегда 1 элемент, так как у сделки может быть только 1 компания)",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "ID компании"
+                  }
+                },
+                "description" : "Модель компании, привязанной к сделке"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "contacts" : {
+        "type" : "object",
+        "properties" : {
+          "contacts" : {
+            "type" : "array",
+            "description" : "Данные контактов, привязанных к сделке. Требуется GET параметр with",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "ID контакта"
+                  },
+                  "is_main" : {
+                    "type" : "boolean",
+                    "description" : "Является ли контакт главным для сделки"
+                  }
+                },
+                "description" : "Модель контакта, привязанного к сделке"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "catalog_elements" : {
+        "type" : "object",
+        "properties" : {
+          "catalog_elements" : {
+            "type" : "array",
+            "description" : "Данные элементов списков, привязанных к сделке. Требуется GET параметр with",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "ID элемента, привязанного к сделке"
+                  },
+                  "metadata" : {
+                    "type" : "object",
+                    "properties" : {
+                      "quantity" : {
+                        "type" : "integer",
+                        "description" : "Количество элементов у сделки"
+                      },
+                      "catalog_id" : {
+                        "type" : "integer",
+                        "description" : "ID списка, в котором находится элемент"
+                      }
+                    },
+                    "description" : "Мета-данные элемента"
+                  }
+                },
+                "description" : "Модель элемента списка, привязанного к сделке"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "rights" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к сделкам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "contacts" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к контактам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "companies" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к компаниям"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "tasks" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к задачам"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_task"
+            } ]
+          },
+          "mail_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу почты"
+          },
+          "catalog_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу списков"
+          },
+          "status_rights" : {
+            "type" : "array",
+            "description" : "Массив из объектов, которые описывают права на статусы",
+            "items" : {
+              "$ref" : "#/components/schemas/rights_status_rights"
+            }
+          }
+        }
+      },
+      "rights_extended" : {
+        "type" : "object",
+        "properties" : {
+          "is_admin" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь администратором"
+          },
+          "is_free" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь бесплатным"
+          },
+          "is_active" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь активным"
+          },
+          "group_id" : {
+            "type" : "integer",
+            "description" : "ID группы, к которой относится пользователь",
+            "nullable" : true
+          },
+          "role_id" : {
+            "type" : "integer",
+            "description" : "ID роли, которая установлена у пользователя",
+            "nullable" : true
+          }
+        }
+      },
+      "rights_for_req" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к сделкам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "contacts" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к контактам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "companies" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к компаниям. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_all"
+            } ]
+          },
+          "tasks" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав доступа к задачам. (Обязательное поле, если нет role_id и не выставлен флаг is_free)"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_task"
+            } ]
+          },
+          "mail_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу почты. По умолчанию: false"
+          },
+          "catalog_access" : {
+            "type" : "boolean",
+            "description" : "Доступ к функционалу списков. По умолчанию: false"
+          },
+          "status_rights" : {
+            "type" : "array",
+            "description" : "Права пользователя на статусы. Необязательное поле, по умолчанию: null",
+            "nullable" : true,
+            "items" : {
+              "$ref" : "#/components/schemas/rights_status_rights"
+            }
+          }
+        },
+        "description" : "Права пользователя. Поле не является обязательным, по умолчанию все доступы запрещены"
+      },
+      "rights_extended_for_req" : {
+        "type" : "object",
+        "properties" : {
+          "is_admin" : {
+            "type" : "boolean",
+            "description" : "Является ли пользователь администратором"
+          },
+          "is_free" : {
+            "type" : "boolean",
+            "description" : "Показатель, является ли пользователь бесплатным. По умолчанию: false"
+          },
+          "group_id" : {
+            "type" : "integer",
+            "description" : "ID группы, к которой принадлежит пользователь. По умолчанию: null",
+            "nullable" : true
+          },
+          "role_id" : {
+            "type" : "integer",
+            "description" : "ID роли, к которой принадлежит пользователь. По умолчанию: null",
+            "nullable" : true
+          }
+        }
+      },
+      "right_group_all" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/view_4"
+        }, {
+          "$ref" : "#/components/schemas/edit_4"
+        }, {
+          "$ref" : "#/components/schemas/add_2"
+        }, {
+          "$ref" : "#/components/schemas/delete_4"
+        }, {
+          "$ref" : "#/components/schemas/export_4"
+        } ]
+      },
+      "right_group_for_task" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/edit_4"
+        }, {
+          "$ref" : "#/components/schemas/delete_4"
+        } ]
+      },
+      "right_group_for_status" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/view_2"
+        }, {
+          "$ref" : "#/components/schemas/edit_2"
+        }, {
+          "$ref" : "#/components/schemas/delete_2"
+        }, {
+          "$ref" : "#/components/schemas/export_2"
+        } ]
+      },
+      "add_2" : {
+        "type" : "object",
+        "properties" : {
+          "add" : {
+            "type" : "string",
+            "description" : "Создание (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "view_2" : {
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "type" : "string",
+            "description" : "Просмотр (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "edit_2" : {
+        "type" : "object",
+        "properties" : {
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "delete_2" : {
+        "type" : "object",
+        "properties" : {
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "export_2" : {
+        "type" : "object",
+        "properties" : {
+          "export" : {
+            "type" : "string",
+            "description" : "Экспорт (допустимые значения - A / D )",
+            "enum" : [ "A", "D" ]
+          }
+        }
+      },
+      "view_4" : {
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "type" : "string",
+            "description" : "Просмотр (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        }
+      },
+      "edit_4" : {
+        "type" : "object",
+        "properties" : {
+          "edit" : {
+            "type" : "string",
+            "description" : "Правка (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        }
+      },
+      "delete_4" : {
+        "type" : "object",
+        "properties" : {
+          "delete" : {
+            "type" : "string",
+            "description" : "Удаление (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        }
+      },
+      "export_4" : {
+        "type" : "object",
+        "properties" : {
+          "export" : {
+            "type" : "string",
+            "description" : "Экспорт (допустимые значения - A / G / M / D )",
+            "enum" : [ "A", "G", "M", "D" ]
+          }
+        }
+      },
+      "links" : {
+        "type" : "object",
+        "properties" : {
+          "_links" : {
+            "$ref" : "#/components/schemas/links__links"
+          }
+        }
+      },
+      "link_obj" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          }
+        }
+      },
+      "links_self" : {
+        "type" : "object",
+        "properties" : {
+          "_links" : {
+            "$ref" : "#/components/schemas/links_self__links"
+          }
+        }
+      },
+      "embedded_for_users" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "$ref" : "#/components/schemas/embedded_for_users__embedded"
+          }
+        }
+      },
+      "embedded_for_roles" : {
+        "type" : "object",
+        "properties" : {
+          "_embedded" : {
+            "$ref" : "#/components/schemas/embedded_for_roles__embedded"
+          }
+        }
+      },
+      "result_tpp" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer"
+          },
+          "_page" : {
+            "type" : "integer"
+          },
+          "_page_count" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "webhook" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID вебхука"
+          },
+          "destination" : {
+            "type" : "integer",
+            "description" : "ID пользователя, создавшего вебхук"
+          },
+          "created_at" : {
+            "type" : "integer",
+            "description" : "Дата создания вебхука, передается в Unix Timestamp"
+          },
+          "updated_at" : {
+            "type" : "integer",
+            "description" : "Дата изменения вебхука, передается в Unix Timestamp"
+          },
+          "account_id" : {
+            "type" : "integer",
+            "description" : "ID аккаунта, в котором находится webhook"
+          },
+          "created_by" : {
+            "type" : "integer",
+            "description" : "ID пользователя, создавшего webhook"
+          },
+          "sort" : {
+            "type" : "integer",
+            "description" : "Сортировка вебхука"
+          },
+          "disabled" : {
+            "type" : "integer",
+            "description" : "Признак отключения вебхука"
+          },
+          "settings" : {
+            "type" : "array",
+            "description" : "Действия, на которые подписан вебхук [см список](https://www.amocrm.ru/developers/content/crm_platform/webhooks-api#webhooks-available-actions)",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "note" : {
+        "type" : "object",
+        "properties" : {
+          "note_type" : {
+            "type" : "integer",
+            "description" : "Тип события",
+            "example" : 7
+          },
+          "element_type" : {
+            "type" : "string",
+            "description" : "Тип сущности элемента",
+            "example" : "lead"
+          },
+          "text" : {
+            "type" : "string",
+            "description" : "Текст события",
+            "example" : "Отправить дубликат договора"
+          }
+        }
+      },
+      "custom_field" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Уникальный идентификатор заполняемого дополнительного поля",
+            "example" : 4399917
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Значения дополнительного поля",
+            "items" : {
+              "oneOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  },
+                  "subtype" : {
+                    "type" : "string",
+                    "description" : "Значения поля (subtype)",
+                    "example" : "WORK"
+                  }
+                }
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  },
+                  "enum" : {
+                    "type" : "string",
+                    "description" : "Значения поля (enum)",
+                    "example" : "WORK"
+                  }
+                }
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля",
+                    "example" : "89457898713"
+                  }
+                }
+              }, {
+                "type" : "string",
+                "description" : "Значение поля",
+                "example" : "3692247"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/result_tpp"
+        }, {
+          "$ref" : "#/components/schemas/links"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_201" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer",
+            "description" : "Количество созданных записей"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/inline_response_201__embedded"
+          }
+        }
+      },
+      "inline_response_200_1" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/users"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "$ref" : "#/components/schemas/embedded_for_users"
+        } ]
+      },
+      "inline_response_200_2" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/result_tpp"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_2__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_201_1" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer",
+            "description" : "Количество созданных записей"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/inline_response_201_1__embedded"
+          }
+        }
+      },
+      "inline_response_200_3" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/roles"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "$ref" : "#/components/schemas/embedded_for_roles"
+        } ]
+      },
+      "inline_response_201_2" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/roles"
+        }, {
+          "$ref" : "#/components/schemas/links_self"
+        } ]
+      },
+      "query" : {
+        "oneOf" : [ {
+          "type" : "string"
+        }, {
+          "type" : "integer"
+        } ]
+      },
+      "inline_response_200_4" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "_page" : {
+              "type" : "integer"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/links"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_4__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_200_5" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_5__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_200_6" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_6__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_200_7" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/leads"
+        } ]
+      },
+      "inline_response_200_8" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/links_self"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "_embedded" : {
+              "$ref" : "#/components/schemas/inline_response_200_8__embedded"
+            }
+          }
+        } ]
+      },
+      "inline_response_200_9" : {
+        "type" : "object",
+        "properties" : {
+          "_total_items" : {
+            "type" : "integer"
+          },
+          "_embedded" : {
+            "$ref" : "#/components/schemas/inline_response_200_9__embedded"
+          }
+        }
+      },
+      "body" : {
+        "required" : [ "destination", "settings" ],
+        "type" : "object",
+        "properties" : {
+          "destination" : {
+            "type" : "string",
+            "description" : "Валидный URL на который необходимо присылать уведомления",
+            "example" : "https://gitlab.example.ru/"
+          },
+          "settings" : {
+            "type" : "array",
+            "description" : "Действия, на которые подписан вебхук [см список](https://www.amocrm.ru/developers/content/crm_platform/webhooks-api#webhooks-available-actions)",
+            "items" : {
+              "type" : "string",
+              "example" : "add_contact",
+              "enum" : [ "responsible_lead", "responsible_contact", "responsible_company", "responsible_customer", "responsible_task", "restore_lead", "restore_contact", "restore_company", "add_lead", "add_contact", "add_company", "add_customer", "add_task", "update_lead", "update_contact", "update_company", "update_customer", "update_task", "delete_lead", "delete_contact", "delete_company", "delete_customer", "delete_task", "status_lead", "responsible_lead", "note_lead", "note_contact", "note_company", "note_customer" ]
+            }
+          }
+        },
+        "example" : {
+          "destination" : "https://gitlab.example.ru/",
+          "settings" : [ "add_contact" ]
+        }
+      },
+      "body_1" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/autorization"
+        }, {
+          "$ref" : "#/components/schemas/refresh_token"
+        } ]
+      },
+      "inline_response_200_10" : {
+        "type" : "object",
+        "properties" : {
+          "token_type" : {
+            "type" : "string",
+            "description" : "Тип токена (Bearer)",
+            "example" : "Bearer"
+          },
+          "expires_in" : {
+            "type" : "integer",
+            "description" : "Время в секундах, показывающее через сколько токен истечет",
+            "example" : 86400
+          },
+          "access_token" : {
+            "type" : "string",
+            "description" : "Access токен"
+          },
+          "refresh_token" : {
+            "type" : "string",
+            "description" : "Refresh токен"
+          }
+        }
+      },
+      "inline_response_400" : {
+        "type" : "object",
+        "properties" : {
+          "hint" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_response_401" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        }
+      },
+      "custom_fields_values_custom_fields_values" : {
+        "type" : "object",
+        "properties" : {
+          "field_id" : {
+            "type" : "integer",
+            "description" : "ID поля, значение которого вы заполняете"
+          },
+          "field_code" : {
+            "type" : "string",
+            "description" : "Символьный код поля, значение которого вы заполняете"
+          },
+          "field_type" : {
+            "type" : "string",
+            "description" : "Тип поля",
+            "enum" : [ "numeric", "text", "checkbox", "select", "multiselect", "category", "date", "url", "textarea", "radiobutton", "shortaddres", "smart_address", "birthday", "legal_entity", "date_time" ]
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Массив заполняемых значений",
+            "items" : {
+              "anyOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля"
+                  }
+                },
+                "description" : "Значение типа: numeric"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля"
+                  }
+                },
+                "description" : "Значение типа: text, url, textarea, shortaddres"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "boolean",
+                    "description" : "Значение поля"
+                  }
+                },
+                "description" : "Значение типа: checkbox"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля"
+                  },
+                  "enum_id" : {
+                    "type" : "integer",
+                    "description" : "ID значения поля (enum)"
+                  }
+                },
+                "description" : "Значение типа: select, multiselect, radiobutton, category. В качестве значения может быть передано как значение, так и ID значения"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "integer",
+                    "description" : "Значение поля (Timestamp)"
+                  }
+                },
+                "description" : "Значение типа: date"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "string",
+                    "description" : "Значение поля"
+                  },
+                  "enum_id" : {
+                    "type" : "integer",
+                    "description" : "ID значения поля (enum). Доступные значения: 1 – Первая строка адреса, 2 – Вторая строка адреса, 3 – Город, 4 – Регион, 5 – Почтовый индекс, 6 – Страна",
+                    "enum" : [ 1, 2, 3, 4, 5, 6 ]
+                  },
+                  "enum_code" : {
+                    "type" : "string",
+                    "description" : "Код значения поля. Доступные значения: address_line_1 – Первая строка адреса, address_line_2 – Вторая строка адреса, city – Город, state – Регион, zip – Почтовый",
+                    "enum" : [ "address_line_1", "address_line_2", "city", "state", "zip", "country" ]
+                  }
+                },
+                "description" : "Значение типа: smart_address. Поле принимает множественные значения. В значении необходимо передать поля value и enum_id или enum_code"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "type" : "object",
+                    "properties" : {
+                      "name" : {
+                        "type" : "string",
+                        "description" : "Название организации"
+                      },
+                      "entity_type" : {
+                        "type" : "integer",
+                        "description" : "Тип юридического лица. 1 – Частное, 2 – Юридическое",
+                        "enum" : [ 1, 2 ]
+                      },
+                      "vat_id" : {
+                        "type" : "string",
+                        "description" : "ИНН организации"
+                      },
+                      "tax_registration_reason_code" : {
+                        "type" : "string",
+                        "description" : "ОГРНИП"
+                      },
+                      "address" : {
+                        "type" : "string",
+                        "description" : "Адрес организации"
+                      },
+                      "kpp" : {
+                        "type" : "string",
+                        "description" : "КПП организации"
+                      },
+                      "external_uid" : {
+                        "type" : "string",
+                        "description" : "Идентификатор внешней системы"
+                      }
+                    },
+                    "description" : "Значение поля"
+                  }
+                },
+                "description" : "Значение типа: legal_entity. В значении необходимо обязательно передать поля name, vat_id, kpp"
+              } ]
+            }
+          }
+        },
+        "description" : "Объект, содержащий информацию по значению дополнительного поля, задаваемых для сущности"
+      },
+      "tags_tags" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID тега"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Название тега"
+          }
+        },
+        "description" : "Модель тега, привязанного к сделке"
+      },
+      "rights_status_rights" : {
+        "type" : "object",
+        "properties" : {
+          "entity_type" : {
+            "type" : "string",
+            "description" : "Тип сущности. `В данный момент поддерживаются только сделки`"
+          },
+          "pipeline_id" : {
+            "type" : "integer",
+            "description" : "ID воронки, в которой находится статус"
+          },
+          "status_id" : {
+            "type" : "integer",
+            "description" : "ID статуса"
+          },
+          "rights" : {
+            "allOf" : [ {
+              "type" : "object",
+              "description" : "Объект прав"
+            }, {
+              "$ref" : "#/components/schemas/right_group_for_status"
+            } ]
+          }
+        }
+      },
+      "links__links" : {
+        "required" : [ "self" ],
+        "type" : "object",
+        "properties" : {
+          "self" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "first" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "prev" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "next" : {
+            "$ref" : "#/components/schemas/link_obj"
+          },
+          "last" : {
+            "$ref" : "#/components/schemas/link_obj"
+          }
+        }
+      },
+      "links_self__links_self" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          }
+        }
+      },
+      "links_self__links" : {
+        "type" : "object",
+        "properties" : {
+          "self" : {
+            "$ref" : "#/components/schemas/links_self__links_self"
+          }
+        }
+      },
+      "embedded_for_users__embedded_groups" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "embedded_for_users__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer"
+                  },
+                  "name" : {
+                    "type" : "string"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          },
+          "groups" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/embedded_for_users__embedded_groups"
+            }
+          }
+        }
+      },
+      "embedded_for_roles__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "description" : "id пользователей"
+            }
+          }
+        }
+      },
+      "inline_response_200__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/users"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              }, {
+                "$ref" : "#/components/schemas/embedded_for_users"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_201__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/users"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "request_id" : {
+                    "type" : "string"
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_2__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/roles"
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              }, {
+                "$ref" : "#/components/schemas/embedded_for_roles"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_201_1__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/roles"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "request_id" : {
+                    "type" : "string"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_4__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/leads"
+            }
+          }
+        }
+      },
+      "inline_response_200_5__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "ID сделки"
+                  },
+                  "request_id" : {
+                    "type" : "string"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_6__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "leads" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "ID сделки"
+                  },
+                  "updated_at" : {
+                    "type" : "integer"
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/links_self"
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_8__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "uid" : {
+                    "type" : "string",
+                    "description" : "Уникальный идентификатор уведомления"
+                  },
+                  "phone_number" : {
+                    "type" : "string",
+                    "description" : "Номер телефона по которому вызвано уведомление"
+                  },
+                  "element_type" : {
+                    "type" : "integer",
+                    "description" : "Тип сущности для которой было вызвано уведомление, если сущность не была найдена то вернется null",
+                    "nullable" : true
+                  },
+                  "element_id" : {
+                    "type" : "integer",
+                    "description" : "Уникальный идентификатор сущности для которой было вызвано уведомление, если сущность не была найдена то вернется null",
+                    "nullable" : true
+                  },
+                  "query_string" : {
+                    "type" : "string"
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      },
+      "inline_response_200_9__embedded" : {
+        "type" : "object",
+        "properties" : {
+          "webhooks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/webhook"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "200_users_create" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_201"
+            }
+          }
+        }
+      },
+      "200_leads_create" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_200_5"
+            }
+          }
+        }
+      },
+      "200_leads_update" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_200_6"
+            },
+            "example" : {
+              "_links" : {
+                "self" : {
+                  "href" : "https://example.amocrm.ru/api/v4/leads"
+                }
+              },
+              "_embedded" : {
+                "leads" : [ {
+                  "id" : 54886,
+                  "updated_at" : 1597519923,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads/54886"
+                    }
+                  }
+                }, {
+                  "id" : 54884,
+                  "updated_at" : 1597519923,
+                  "_links" : {
+                    "self" : {
+                      "href" : "https://example.amocrm.ru/api/v4/leads/54884"
+                    }
+                  }
+                } ]
+              }
+            }
+          }
+        }
+      },
+      "200_event_add" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_200_8"
+            }
+          }
+        }
+      },
+      "200_webhooks" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "_total_items" : {
+                  "type" : "integer"
+                },
+                "_embedded" : {
+                  "type" : "object",
+                  "properties" : {
+                    "webhooks" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/webhook"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "example" : {
+              "_total_items" : 2,
+              "_embedded" : {
+                "webhooks" : [ {
+                  "id" : 839656,
+                  "destination" : "https://webhook-uri.com",
+                  "created_at" : 1575539157,
+                  "updated_at" : 1575539157,
+                  "account_id" : 321321,
+                  "created_by" : 123123,
+                  "sort" : 1,
+                  "disabled" : false,
+                  "settings" : [ "add_task" ]
+                }, {
+                  "id" : 849193,
+                  "destination" : "https://api.test.ru/amoWebHook",
+                  "created_at" : 1576157524,
+                  "updated_at" : 1585816857,
+                  "account_id" : 321321,
+                  "created_by" : 123123,
+                  "sort" : 2,
+                  "disabled" : true,
+                  "settings" : [ "update_lead" ]
+                } ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "id" : {
+        "name" : "id",
+        "in" : "path",
+        "description" : "ID сущности",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "integer",
+          "example" : 121
+        }
+      },
+      "page" : {
+        "name" : "page",
+        "in" : "query",
+        "description" : "Страница выборки",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "example" : 1
+        }
+      },
+      "limit" : {
+        "name" : "limit",
+        "in" : "query",
+        "description" : "Количество возвращаемых сущностей за один запрос (Максимум – 250)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "example" : 2
+        }
+      },
+      "with_for_users" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры: \n- __role__ - добавляет в ответ роль к которой принадлежит пользователь;\n- __group__ - добавляет в ответ группу к которой принадлежит пользователь;\n- __uuid__ - Добавляет в ответ UUID пользователя, может быть null, в данный момент uuid не используется для работы сторонних интеграций\n- __amojo_id__ - Добавляет в ответ ID пользователя в сервисе чатов, может быть null \n",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "role, group"
+        }
+      },
+      "with_for_roles" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры (`users` - добавляет в ответ ID пользователей, у которых установлена роль)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "users"
+        }
+      },
+      "with_for_leads" : {
+        "name" : "with",
+        "in" : "query",
+        "description" : "Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую. Поддерживает следующие параметры:\n  - __catalog_elements__ - Добавляет в ответ связанные со сделками элементы списков;\n  - __is_price_modified_by_robot__ - Добавляет в ответ свойство, показывающее, изменен ли в последний раз бюджет сделки роботом; \n  - __loss_reason__ - Добавляет в ответ расширенную информацию по причине отказа;\n  - __contacts__ - Добавляет в ответ информацию о связанных со сделкой контактах;\n  - __only_deleted__ - Если передать данный параметр, то в ответе на запрос метода, вернутся удаленные сделки, которые еще находятся в корзине. В ответ вы получите модель сделки, у которой доступны дату изменения, ID пользователя сделавшего последнее изменение, её ID и параметр is_deleted = true\n  - __source_id__ - Добавляет в ответ ID источника\n",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "contacts"
+        }
+      },
+      "query" : {
+        "name" : "query",
+        "in" : "query",
+        "description" : "Поисковый запрос (Осуществляет поиск по заполненным полям сущности)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/query"
+        }
+      },
+      "type" : {
+        "name" : "type",
+        "in" : "query",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        },
+        "example" : "phone_call"
+      }
+    },
+    "requestBodies" : {
+      "create_users" : {
+        "description" : "### Параметры запроса\n__В данном методе параметры запроса имеют зависимости:__\n- Если передано валидное значение role_id, то значения полей _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}, status_rights: {}, mail_access: , catalog_access: {}}\"_ - будут проигнорированы\n- Если передано значение true в поле is_free, то значения полей _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}, status_rights: {}, mail_access: , catalog_access: {}, role_id:, group_id:}\"_ - будут проигнорированы\n- В случае передачи значение null в поле _\"rights: {group_id: null}\"_, пользователь будет добавлен в группу по-умолчанию – “Отдел продаж”\n- “Администратор” и “Бесплатные пользователи” не являются ролями, для обозначения заведены отдельные флаги _\"rights: {is_free:}\"_ и _\"rights: {is_admin:}\"_\n- Если передать поле _\"rights: {status_rights: null}\"_, пользователь получит права на статусы неразобранного без доступа к ним\n  Поля _\"rights: { leads: {}, tasks: {}, contacts: {}, companies: {}}\"_ должны учитывать [зависимость прав](https://www.amocrm.ru/developers/content/crm_platform/users-api#rights-dependence).\n",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "required" : [ "email", "name", "password" ],
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "description" : "Полное имя пользователя. Значение не должно содержать спец символов кроме .@-_, состоять изпробелов, содержать ссылок, а также не может быть более 50 символов. При создании нового пользователя, поле является обязательным"
+                  },
+                  "email" : {
+                    "type" : "string",
+                    "description" : "E-mail пользователя. Поле является обязательным"
+                  },
+                  "password" : {
+                    "type" : "string",
+                    "description" : ":Пароль пользователя, должно состоять минимум из 6 символов и иметь хотя бы 1 цифру, маленькую и заглавную букву (При создании нового пользователя, поле является обязательным)"
+                  },
+                  "lang" : {
+                    "type" : "string",
+                    "description" : "Язык пользователя. Выбор из вариантов: en / ru / es. По умолчанию – язык аккаунта (ru или en)"
+                  },
+                  "rights" : {
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/rights_for_req"
+                    }, {
+                      "$ref" : "#/components/schemas/rights_extended_for_req"
+                    }, {
+                      "required" : [ "companies", "contacts", "leads", "tasks" ]
+                    } ]
+                  },
+                  "request_id" : {
+                    "type" : "string",
+                    "description" : "Поле, которое вернется вам в ответе без изменений и не будет сохранено."
+                  }
+                }
+              }
+            },
+            "examples" : {
+              "testUser" : {
+                "value" : [ {
+                  "name" : "testUser",
+                  "email" : "test_user@test.com",
+                  "password" : "uadTea81!",
+                  "lang" : "en",
+                  "rights" : {
+                    "leads" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "contacts" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "companies" : {
+                      "view" : "A",
+                      "edit" : "A",
+                      "add" : "A",
+                      "delete" : "A",
+                      "export" : "D"
+                    },
+                    "tasks" : {
+                      "edit" : "A",
+                      "delete" : "A"
+                    },
+                    "mail_access" : false,
+                    "catalog_access" : false,
+                    "is_admin" : false,
+                    "is_free" : false,
+                    "is_active" : true
+                  },
+                  "request_id" : "11"
+                } ]
+              },
+              "freeUser" : {
+                "value" : [ {
+                  "name" : "freeUser",
+                  "email" : "free_user@test.com",
+                  "password" : "uadTea82!",
+                  "lang" : "en",
+                  "rights" : {
+                    "is_free" : true,
+                    "is_active" : true
+                  },
+                  "request_id" : "12"
+                } ]
+              }
+            }
+          }
+        }
+      },
+      "create_roles" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "required" : [ "name" ],
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "description" : "Название роли"
+                  },
+                  "rights" : {
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/rights_for_req"
+                    } ]
+                  },
+                  "request_id" : {
+                    "type" : "string",
+                    "description" : "Поле, которое вернется вам в ответе без изменений и не будет сохранено."
+                  }
+                }
+              }
+            },
+            "example" : [ {
+              "name" : "role 3",
+              "rights" : {
+                "leads" : {
+                  "add" : "A",
+                  "edit" : "G",
+                  "view" : "G",
+                  "delete" : "G",
+                  "export" : "G"
+                },
+                "tasks" : {
+                  "edit" : "A",
+                  "delete" : "A"
+                },
+                "contacts" : {
+                  "add" : "A",
+                  "edit" : "A",
+                  "view" : "A",
+                  "delete" : "A",
+                  "export" : "A"
+                },
+                "companies" : {
+                  "add" : "A",
+                  "edit" : "A",
+                  "view" : "A",
+                  "delete" : "A",
+                  "export" : "A"
+                },
+                "mail_access" : true,
+                "status_rights" : [ {
+                  "entity_type" : "leads",
+                  "pipeline_id" : 16056,
+                  "status_id" : 20542166,
+                  "rights" : {
+                    "edit" : "A",
+                    "view" : "A",
+                    "delete" : "A",
+                    "export" : "A"
+                  }
+                } ],
+                "catalog_access" : true
+              }
+            } ]
+          }
+        }
+      },
+      "update_roles" : {
+        "description" : "### Параметры запроса\n- Обязательных полей нет, но запрос не может быть пустым.\n- Если параметр rights[status_rights] имеет значение null или [], то права на статусы сделок для данной роли будут удалены, в таком случае права на статусы неразобранного останутся и на каждое действие будет выставлено значение запрещен.\n",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "description" : "Название роли"
+                },
+                "rights" : {
+                  "allOf" : [ {
+                    "$ref" : "#/components/schemas/rights_for_req"
+                  } ]
+                }
+              }
+            },
+            "example" : {
+              "name" : "role 3 modified",
+              "rights" : {
+                "contacts" : {
+                  "add" : "A",
+                  "edit" : "D",
+                  "view" : "D",
+                  "delete" : "D",
+                  "export" : "D"
+                }
+              }
+            }
+          }
+        }
+      },
+      "leads_create" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/leads_req"
+              }
+            },
+            "example" : [ {
+              "name" : "Сделка для примера 1",
+              "created_by" : 0,
+              "price" : 20000
+            }, {
+              "name" : "Сделка для примера 2",
+              "price" : 10000,
+              "_embedded" : {
+                "tags" : [ {
+                  "id" : 2719
+                } ]
+              }
+            } ]
+          }
+        }
+      },
+      "leads_update" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "allOf" : [ {
+                  "required" : [ "id" ],
+                  "type" : "object",
+                  "properties" : {
+                    "id" : {
+                      "type" : "integer",
+                      "description" : "ID сделки"
+                    }
+                  }
+                }, {
+                  "$ref" : "#/components/schemas/leads_req"
+                } ]
+              }
+            },
+            "examples" : {
+              "lead" : {
+                "value" : [ {
+                  "id" : 54886,
+                  "price" : 2020,
+                  "updated_by" : 1
+                } ]
+              },
+              "leads" : {
+                "value" : [ {
+                  "id" : 54886,
+                  "pipeline_id" : 47521,
+                  "status_id" : 143,
+                  "closed_at" : 1589297221,
+                  "loss_reason_id" : 7323,
+                  "updated_by" : 0
+                }, {
+                  "id" : 54884,
+                  "price" : 50000,
+                  "pipeline_id" : 47521,
+                  "status_id" : 525743,
+                  "_embedded" : { }
+                } ]
+              }
+            }
+          }
+        }
+      },
+      "leads_update_id" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/leads_req"
+            },
+            "example" : {
+              "name" : "Сделка для примера 2-at",
+              "price" : 50000
+            }
+          }
+        }
+      },
+      "leads_create_incoming" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "add" : {
+                  "type" : "array",
+                  "items" : {
+                    "required" : [ "incoming_entities", "source_name" ],
+                    "type" : "object",
+                    "properties" : {
+                      "source_name" : {
+                        "type" : "string",
+                        "description" : "Название источника заявки",
+                        "example" : "ОАО Коспромсервис"
+                      },
+                      "source_uid" : {
+                        "type" : "string",
+                        "description" : "Уникальный идентификатор заявки",
+                        "example" : "a1fee7c0fc436088e64ba2e8822ba2b3"
+                      },
+                      "created_at" : {
+                        "type" : "integer",
+                        "description" : "Дата и время создания",
+                        "example" : 1510261200
+                      },
+                      "pipeline_id" : {
+                        "type" : "integer",
+                        "description" : "id цифровой воронки, если параметр не передан, то заявка будет добавлена в неразобранное первой воронки",
+                        "example" : 41563
+                      },
+                      "incoming_entities" : {
+                        "type" : "object",
+                        "properties" : {
+                          "leads" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания новой сделки. Может содержать все параметры и дополнительные поля доступные 'Сделкам' на аккаунте",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Название сделки",
+                                  "example" : "Техническое обслуживание бензопил"
+                                },
+                                "created_at" : {
+                                  "type" : "integer",
+                                  "description" : "Дата создания сделки, передается в Unix Timestamp",
+                                  "example" : 1509483600
+                                },
+                                "status_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID статуса, в который добавляется сделка, по-умолчанию – первый этап главной воронки",
+                                  "example" : 13667502
+                                },
+                                "responsible_user_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID пользователя, ответственного за сделку",
+                                  "example" : 504141
+                                },
+                                "price" : {
+                                  "type" : "integer",
+                                  "description" : "Бюджет сделки",
+                                  "example" : 83000
+                                },
+                                "tags" : {
+                                  "type" : "string",
+                                  "description" : "Название тега",
+                                  "example" : "ТО, услуги"
+                                },
+                                "notes" : {
+                                  "type" : "array",
+                                  "description" : "Список добавляемых событий",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/note"
+                                  }
+                                },
+                                "custom_fields" : {
+                                  "type" : "array",
+                                  "description" : "Дополнительные поля",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/custom_field"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "contacts" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания нового контакта. Может содержать все параметры и дополнительные поля доступные 'Контактам' на аккаунте.",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Полное имя"
+                                },
+                                "date_create" : {
+                                  "type" : "integer",
+                                  "description" : "Дата создания, передается в Unix Timestamp",
+                                  "example" : 1509483600
+                                },
+                                "responsible_user_id" : {
+                                  "type" : "integer",
+                                  "description" : "ID пользователя, ответственного за сделку",
+                                  "example" : 504141
+                                },
+                                "custom_fields" : {
+                                  "type" : "array",
+                                  "description" : "Дополнительные поля",
+                                  "items" : {
+                                    "$ref" : "#/components/schemas/custom_field"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "companies" : {
+                            "type" : "array",
+                            "description" : "Массив содержащий информацию для создания новой компании. Может содержать все параметры и дополнительные поля доступные 'Компаниям' на аккаунте",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "name" : {
+                                  "type" : "string",
+                                  "description" : "Наименование компании",
+                                  "example" : "ОАО Коспромсервис"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "description" : "Массив содержащий информацию о создаваемых элементах сущностей. Является обязательным, поскольку после принятия неразобранного, будет создан соответствующий элемент сущности."
+                      },
+                      "incoming_lead_info" : {
+                        "required" : [ "date_call", "duration", "from", "link", "service_code", "to" ],
+                        "type" : "object",
+                        "properties" : {
+                          "to" : {
+                            "type" : "integer",
+                            "description" : "Идентификатор пользователя, который принял звонок",
+                            "example" : 41565
+                          },
+                          "from" : {
+                            "type" : "string",
+                            "description" : "Внешний номер телефона",
+                            "example" : "89456153101"
+                          },
+                          "date_call" : {
+                            "type" : "integer",
+                            "description" : "Дата и время звонка, передается в Unix Timestamp",
+                            "example" : 1509483600
+                          },
+                          "duration" : {
+                            "type" : "integer",
+                            "description" : "Продолжительность звонка",
+                            "example" : 54
+                          },
+                          "link" : {
+                            "type" : "string",
+                            "description" : "Ссылка на запись звонка",
+                            "example" : "https://www.example.com/records/2017/11/01/98431.mp3"
+                          },
+                          "service_code" : {
+                            "type" : "string",
+                            "description" : "Код виджета или сервиса, через который был совершён звонок",
+                            "example" : "CkKwPam6"
+                          },
+                          "uniq" : {
+                            "type" : "string",
+                            "description" : "Уникальный код звонка",
+                            "example" : "a1fee7c0fc436088e64ba2e8822ba2b3ewrw"
+                          },
+                          "add_note" : {
+                            "type" : "string",
+                            "description" : "Примечание",
+                            "example" : "Договорились о сотрудничестве"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "events_add" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "add" : {
+                  "type" : "array",
+                  "items" : {
+                    "required" : [ "phone_number", "type" ],
+                    "type" : "object",
+                    "properties" : {
+                      "type" : {
+                        "type" : "string",
+                        "description" : "Тип уведомления"
+                      },
+                      "phone_number" : {
+                        "type" : "string",
+                        "description" : "Номер телефона"
+                      },
+                      "users" : {
+                        "description" : "Id пользователей для которых будет отправлено уведомление. Если не передавать этот параметр, то уведомление будет отправлено для всех пользователей",
+                        "oneOf" : [ {
+                          "type" : "array",
+                          "items" : {
+                            "type" : "integer"
+                          }
+                        }, {
+                          "type" : "string"
+                        }, {
+                          "type" : "integer"
+                        } ]
+                      }
+                    }
+                  }
+                }
+              },
+              "example" : {
+                "add" : [ {
+                  "type" : "phone_call",
+                  "phone_number" : "+79998885533",
+                  "users" : [ 88888, 99999 ]
+                } ]
+              }
+            }
+          }
+        }
+      },
+      "calls_add" : {
+        "description" : "Параметры запроса:",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "add" : {
+                  "type" : "array",
+                  "items" : {
+                    "required" : [ "direction", "phone_number" ],
+                    "type" : "object",
+                    "properties" : {
+                      "phone_number" : {
+                        "type" : "string",
+                        "description" : "Внешний номер телефона"
+                      },
+                      "direction" : {
+                        "type" : "string",
+                        "description" : "Тип звонка (inbound – входящий, outbound – исходящий)",
+                        "enum" : [ "inbound", "outbound" ]
+                      },
+                      "uniq" : {
+                        "type" : "string",
+                        "description" : "Уникальный код звонка"
+                      },
+                      "duration" : {
+                        "type" : "string",
+                        "description" : "Продолжительность звонка в секундах"
+                      },
+                      "source" : {
+                        "type" : "string",
+                        "description" : "Код виджета или сервиса, через который был совершён звонок"
+                      },
+                      "call_status" : {
+                        "type" : "integer",
+                        "description" : "Статус звонка. (1 - Оставил голосовое сообщение; 2 - Перезвонить позже; 3 - Нет на месте; 4 - Разговор состоялся; 5 -  Неверный номер; 6 -  Не дозвонился; 7 -  Номер занят.)",
+                        "enum" : [ 1, 2, 3, 4, 5, 6, 7 ]
+                      },
+                      "link" : {
+                        "type" : "string",
+                        "description" : "Ссылка на запись звонка"
+                      },
+                      "created_at" : {
+                        "type" : "integer",
+                        "description" : "Дата и время создания примечания о звонке (Timestamp)"
+                      },
+                      "updated_at" : {
+                        "type" : "integer",
+                        "description" : "Дата и время изменения примечания о звонке (Timestamp)"
+                      },
+                      "created_by" : {
+                        "type" : "integer",
+                        "description" : "id пользователя создавшего примечание о звонке, если в запросе не указан явно, то по умолчанию проставляется id администратора аккаунта. Данный параметр отвечает за отображение имени пользователя в блоках от кого/кому был совершен звонок"
+                      },
+                      "updated_by" : {
+                        "type" : "integer",
+                        "description" : "id пользователя обновившего примечание о звонке"
+                      },
+                      "responsible_user_id" : {
+                        "type" : "integer",
+                        "description" : "id пользователя ответственного за звонок, при указании этого параметра, ответственный пользователь сможет совершить действие с примечанием (например, удаление)"
+                      }
+                    }
+                  }
+                }
+              },
+              "example" : {
+                "add" : [ {
+                  "uniq" : "394427aaf821879e29efbc4eb98er22171514",
+                  "phone_number" : "71964444444",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 98,
+                  "call_status" : 2,
+                  "call_result" : "Перезвонить позже",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                }, {
+                  "uniq" : "394427aaf821879e29efbc4eb98er22171514",
+                  "phone_number" : "71967777777",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 44,
+                  "call_status" : 4,
+                  "call_result" : "Поговорили",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                }, {
+                  "uniq" : "394427aaf821879e29efbc4eb456t22171514",
+                  "phone_number" : "71961111111",
+                  "source" : "amo_custom_widget",
+                  "created_at" : 1414654739,
+                  "created_by" : "999999",
+                  "duration" : 120,
+                  "call_status" : 4,
+                  "call_result" : "Поговорили",
+                  "direction" : "inbound",
+                  "link" : "http:///* ссылка на запись */.mp3",
+                  "responsible_user_id" : "956757"
+                } ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}
