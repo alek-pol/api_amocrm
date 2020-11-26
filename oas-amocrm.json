@@ -48,7 +48,7 @@
     "description" : "Роли"
   }, {
     "name" : "Webhooks",
-    "description" : "Вебхуки"
+    "description" : "Вебхуки!"
   } ],
   "paths" : {
     "/api/v4/users" : {
@@ -1084,7 +1084,7 @@
       "post" : {
         "tags" : [ "Incoming leads" ],
         "summary" : "Добавление неразобранных заявок",
-        "description" : "## Метод позволяет добавлять неразобранные заявки.\n",
+        "description" : "## Метод позволяет добавлять неразобранные заявки\n",
         "operationId" : "add_incoming_leads",
         "requestBody" : {
           "$ref" : "#/components/requestBodies/leads_create_incoming"
@@ -2192,7 +2192,7 @@
             "type" : "array",
             "description" : "Значения дополнительного поля",
             "items" : {
-              "oneOf" : [ {
+              "anyOf" : [ {
                 "type" : "object",
                 "properties" : {
                   "value" : {
