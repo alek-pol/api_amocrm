@@ -48,7 +48,7 @@
     "description" : "Роли"
   }, {
     "name" : "Webhooks",
-    "description" : "Вебхуки!"
+    "description" : "Вебхуки"
   } ],
   "paths" : {
     "/api/v4/users" : {
@@ -2408,7 +2408,7 @@
             "items" : {
               "type" : "string",
               "example" : "add_contact",
-              "enum" : [ "responsible_lead", "responsible_contact", "responsible_company", "responsible_customer", "responsible_task", "restore_lead", "restore_contact", "restore_company", "add_lead", "add_contact", "add_company", "add_customer", "add_task", "update_lead", "update_contact", "update_company", "update_customer", "update_task", "delete_lead", "delete_contact", "delete_company", "delete_customer", "delete_task", "status_lead", "responsible_lead", "note_lead", "note_contact", "note_company", "note_customer" ]
+              "enum" : [ "responsible_lead", "responsible_contact", "responsible_company", "responsible_customer", "responsible_task", "restore_lead", "restore_contact", "restore_company", "add_lead", "add_contact", "add_company", "add_customer", "add_task", "update_lead", "update_contact", "update_company", "update_customer", "update_task", "delete_lead", "delete_contact", "delete_company", "delete_customer", "delete_task", "status_lead", "note_lead", "note_contact", "note_company", "note_customer" ]
             }
           }
         },
